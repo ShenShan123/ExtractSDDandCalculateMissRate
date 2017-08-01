@@ -1,0 +1,253 @@
+input file is ../gcc/sample-5000-10M-trunc-131072.txt
+cache capacity 8192
+block size 64
+associativity 2
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0805415
+cache capacity 8192
+block size 64
+associativity 4
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0758961
+cache capacity 8192
+block size 64
+associativity 8
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0743277
+cache capacity 8192
+block size 64
+associativity 16
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0737266
+cache capacity 8192
+block size 64
+associativity 32
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0734757
+cache capacity 8192
+block size 64
+associativity 64
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.07336
+cache capacity 16384
+block size 64
+associativity 2
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0718986
+cache capacity 16384
+block size 64
+associativity 4
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.069872
+cache capacity 16384
+block size 64
+associativity 8
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0695118
+cache capacity 16384
+block size 64
+associativity 16
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0694331
+cache capacity 16384
+block size 64
+associativity 32
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0694139
+cache capacity 16384
+block size 64
+associativity 64
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0694047
+cache capacity 32768
+block size 64
+associativity 2
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0647271
+cache capacity 32768
+block size 64
+associativity 4
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0630589
+cache capacity 32768
+block size 64
+associativity 8
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0623307
+cache capacity 32768
+block size 64
+associativity 16
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0619215
+cache capacity 32768
+block size 64
+associativity 32
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0617313
+cache capacity 32768
+block size 64
+associativity 64
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0617181
+cache capacity 131072
+block size 64
+associativity 2
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0558083
+cache capacity 131072
+block size 64
+associativity 4
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0548886
+cache capacity 131072
+block size 64
+associativity 8
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0545695
+cache capacity 131072
+block size 64
+associativity 16
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0544224
+cache capacity 131072
+block size 64
+associativity 32
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0543255
+cache capacity 131072
+block size 64
+associativity 64
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0542803
+cache capacity 262144
+block size 64
+associativity 2
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0508639
+cache capacity 262144
+block size 64
+associativity 4
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0516355
+cache capacity 262144
+block size 64
+associativity 8
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0524067
+cache capacity 262144
+block size 64
+associativity 16
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.052729
+cache capacity 262144
+block size 64
+associativity 32
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0528045
+cache capacity 262144
+block size 64
+associativity 64
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0528677
+cache capacity 524288
+block size 64
+associativity 2
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0392423
+cache capacity 524288
+block size 64
+associativity 4
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0383971
+cache capacity 524288
+block size 64
+associativity 8
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0381173
+cache capacity 524288
+block size 64
+associativity 16
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.03801
+cache capacity 524288
+block size 64
+associativity 32
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0377037
+cache capacity 524288
+block size 64
+associativity 64
+truncation distance 131072
+input file ../gcc/sample-5000-10M-trunc-131072.txt
+output file test.dump
+miss rate 0.0369187

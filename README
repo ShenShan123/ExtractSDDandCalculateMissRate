@@ -1,0 +1,16 @@
+Extract the stack distance distribution with no sampling technique.
+This program generates the SDD input for calMissRate program.
+===================================================================
+the arguments:
+-o output file path, default SDD.txt
+-m truncation distance, default 4K
+-i interval size, default 10M
+-s sample rate, default 20000, i.e. 5e-5
+
+For example:
+$ cd gcc-trace
+$ ../../../../pin -t ../obj-intel64/memTraceSimple.so -m 262144 -o trunc-262144.txt -i 100000000 -s 500 -- ./gcc_base.gcc41-amd64bit 166.in -o 166.s
+===================================================================
+how to build?
+Just default make
+$ make obj-intel64/memTraceSimple.so

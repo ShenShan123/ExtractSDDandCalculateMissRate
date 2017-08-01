@@ -1,0 +1,295 @@
+input file is ../bzip2/bzip2-10000-10M-4096.txt
+cache capacity 8192
+block size 64
+associativity 2
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0423283
+cache capacity 8192
+block size 64
+associativity 4
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0388929
+cache capacity 8192
+block size 64
+associativity 8
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0377717
+cache capacity 8192
+block size 64
+associativity 16
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0373135
+cache capacity 8192
+block size 64
+associativity 32
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0370477
+cache capacity 8192
+block size 64
+associativity 64
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0368371
+cache capacity 16384
+block size 64
+associativity 2
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0367718
+cache capacity 16384
+block size 64
+associativity 4
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0349481
+cache capacity 16384
+block size 64
+associativity 8
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0343783
+cache capacity 16384
+block size 64
+associativity 16
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0341391
+cache capacity 16384
+block size 64
+associativity 32
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0340035
+cache capacity 16384
+block size 64
+associativity 64
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0339085
+cache capacity 32768
+block size 64
+associativity 2
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0337245
+cache capacity 32768
+block size 64
+associativity 4
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0328136
+cache capacity 32768
+block size 64
+associativity 8
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.032569
+cache capacity 32768
+block size 64
+associativity 16
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0324811
+cache capacity 32768
+block size 64
+associativity 32
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.032442
+cache capacity 32768
+block size 64
+associativity 64
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0324151
+cache capacity 65536
+block size 64
+associativity 2
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0315941
+cache capacity 65536
+block size 64
+associativity 4
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0311443
+cache capacity 65536
+block size 64
+associativity 8
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0310373
+cache capacity 65536
+block size 64
+associativity 16
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0310058
+cache capacity 65536
+block size 64
+associativity 32
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0309952
+cache capacity 65536
+block size 64
+associativity 64
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0309896
+cache capacity 131072
+block size 64
+associativity 2
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0293
+cache capacity 131072
+block size 64
+associativity 4
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0289646
+cache capacity 131072
+block size 64
+associativity 8
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0289133
+cache capacity 131072
+block size 64
+associativity 16
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0288734
+cache capacity 131072
+block size 64
+associativity 32
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0288307
+cache capacity 131072
+block size 64
+associativity 64
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0288004
+cache capacity 262144
+block size 64
+associativity 2
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0271631
+cache capacity 262144
+block size 64
+associativity 4
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0265926
+cache capacity 262144
+block size 64
+associativity 8
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0261247
+cache capacity 262144
+block size 64
+associativity 16
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0258224
+cache capacity 262144
+block size 64
+associativity 32
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0256404
+cache capacity 262144
+block size 64
+associativity 64
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0255136
+cache capacity 524288
+block size 64
+associativity 2
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0259942
+cache capacity 524288
+block size 64
+associativity 4
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0253526
+cache capacity 524288
+block size 64
+associativity 8
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0252194
+cache capacity 524288
+block size 64
+associativity 16
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0252191
+cache capacity 524288
+block size 64
+associativity 32
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0252191
+cache capacity 524288
+block size 64
+associativity 64
+truncation distance 4096
+input file ../bzip2/bzip2-10000-10M-4096.txt
+output file test.dump
+miss rate 0.0252191

@@ -1,0 +1,295 @@
+input file is ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+cache capacity 8192
+block size 64
+associativity 2
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0426971
+cache capacity 8192
+block size 64
+associativity 4
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0391378
+cache capacity 8192
+block size 64
+associativity 8
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0379781
+cache capacity 8192
+block size 64
+associativity 16
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.037512
+cache capacity 8192
+block size 64
+associativity 32
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0372482
+cache capacity 8192
+block size 64
+associativity 64
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0370408
+cache capacity 16384
+block size 64
+associativity 2
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0370298
+cache capacity 16384
+block size 64
+associativity 4
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0351666
+cache capacity 16384
+block size 64
+associativity 8
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0345958
+cache capacity 16384
+block size 64
+associativity 16
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0343626
+cache capacity 16384
+block size 64
+associativity 32
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0342293
+cache capacity 16384
+block size 64
+associativity 64
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0341315
+cache capacity 32768
+block size 64
+associativity 2
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0339506
+cache capacity 32768
+block size 64
+associativity 4
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0330302
+cache capacity 32768
+block size 64
+associativity 8
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0327827
+cache capacity 32768
+block size 64
+associativity 16
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0326876
+cache capacity 32768
+block size 64
+associativity 32
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0326455
+cache capacity 32768
+block size 64
+associativity 64
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0326204
+cache capacity 65536
+block size 64
+associativity 2
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0317985
+cache capacity 65536
+block size 64
+associativity 4
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0313444
+cache capacity 65536
+block size 64
+associativity 8
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0312366
+cache capacity 65536
+block size 64
+associativity 16
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0312136
+cache capacity 65536
+block size 64
+associativity 32
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0312041
+cache capacity 65536
+block size 64
+associativity 64
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0311982
+cache capacity 131072
+block size 64
+associativity 2
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0294658
+cache capacity 131072
+block size 64
+associativity 4
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.029131
+cache capacity 131072
+block size 64
+associativity 8
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0290892
+cache capacity 131072
+block size 64
+associativity 16
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0290437
+cache capacity 131072
+block size 64
+associativity 32
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0290093
+cache capacity 131072
+block size 64
+associativity 64
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0289858
+cache capacity 262144
+block size 64
+associativity 2
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.026623
+cache capacity 262144
+block size 64
+associativity 4
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0261939
+cache capacity 262144
+block size 64
+associativity 8
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0258444
+cache capacity 262144
+block size 64
+associativity 16
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.025696
+cache capacity 262144
+block size 64
+associativity 32
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0256077
+cache capacity 262144
+block size 64
+associativity 64
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.025551
+cache capacity 524288
+block size 64
+associativity 2
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0241259
+cache capacity 524288
+block size 64
+associativity 4
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0232097
+cache capacity 524288
+block size 64
+associativity 8
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0229136
+cache capacity 524288
+block size 64
+associativity 16
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.022764
+cache capacity 524288
+block size 64
+associativity 32
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0226605
+cache capacity 524288
+block size 64
+associativity 64
+truncation distance 8192
+input file ../bzip2/log-memInterval-sample-10000-10M-trunc-8192.txt
+output file test.dump
+0.0225891

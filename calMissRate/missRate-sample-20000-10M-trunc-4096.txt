@@ -1,0 +1,295 @@
+input file is ../gcc/sample-20000-10M-trunc-4096-log.txt
+cache capacity 8192
+block size 64
+associativity 2
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0883157
+cache capacity 8192
+block size 64
+associativity 4
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0832663
+cache capacity 8192
+block size 64
+associativity 8
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0815803
+cache capacity 8192
+block size 64
+associativity 16
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0808852
+cache capacity 8192
+block size 64
+associativity 32
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0805013
+cache capacity 8192
+block size 64
+associativity 64
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0802013
+cache capacity 16384
+block size 64
+associativity 2
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0790698
+cache capacity 16384
+block size 64
+associativity 4
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0766372
+cache capacity 16384
+block size 64
+associativity 8
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0760923
+cache capacity 16384
+block size 64
+associativity 16
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0759784
+cache capacity 16384
+block size 64
+associativity 32
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0759602
+cache capacity 16384
+block size 64
+associativity 64
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.075953
+cache capacity 32768
+block size 64
+associativity 2
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0721433
+cache capacity 32768
+block size 64
+associativity 4
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0704672
+cache capacity 32768
+block size 64
+associativity 8
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0698209
+cache capacity 32768
+block size 64
+associativity 16
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0694582
+cache capacity 32768
+block size 64
+associativity 32
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0691961
+cache capacity 32768
+block size 64
+associativity 64
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0690027
+cache capacity 65536
+block size 64
+associativity 2
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0666473
+cache capacity 65536
+block size 64
+associativity 4
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0650524
+cache capacity 65536
+block size 64
+associativity 8
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.064223
+cache capacity 65536
+block size 64
+associativity 16
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0637477
+cache capacity 65536
+block size 64
+associativity 32
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.063444
+cache capacity 65536
+block size 64
+associativity 64
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0632136
+cache capacity 131072
+block size 64
+associativity 2
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0633364
+cache capacity 131072
+block size 64
+associativity 4
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0620986
+cache capacity 131072
+block size 64
+associativity 8
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0615817
+cache capacity 131072
+block size 64
+associativity 16
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0613174
+cache capacity 131072
+block size 64
+associativity 32
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0611873
+cache capacity 131072
+block size 64
+associativity 64
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0611256
+cache capacity 262144
+block size 64
+associativity 2
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0616058
+cache capacity 262144
+block size 64
+associativity 4
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0608226
+cache capacity 262144
+block size 64
+associativity 8
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.060516
+cache capacity 262144
+block size 64
+associativity 16
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0604447
+cache capacity 262144
+block size 64
+associativity 32
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0603984
+cache capacity 262144
+block size 64
+associativity 64
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0603678
+cache capacity 524288
+block size 64
+associativity 2
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0604843
+cache capacity 524288
+block size 64
+associativity 4
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0602978
+cache capacity 524288
+block size 64
+associativity 8
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0602965
+cache capacity 524288
+block size 64
+associativity 16
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0602958
+cache capacity 524288
+block size 64
+associativity 32
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0602955
+cache capacity 524288
+block size 64
+associativity 64
+truncation distance 4096
+input file ../gcc/sample-20000-10M-trunc-4096-log.txt
+output file test.dump
+1505002 258870 340824 293248 221478 86976 57976 23544 11672 22276 17706 5240 1608 183244 miss rate 0.0602955
