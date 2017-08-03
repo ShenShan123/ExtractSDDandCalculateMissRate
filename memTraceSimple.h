@@ -16,10 +16,11 @@
 
 
 static uint64_t Truncation = 0;
+static uint64_t Counter = 0;
 static uint64_t NumMemAccs = 0;
-static uint64_t NumInsts = 0;
 static uint64_t NumIntervals = 0;
 static uint64_t IntervalSize = 0;
+static uint32_t SddDiff = 0;
 std::ofstream fout;
 //std::vector<double> manhattanDist;
 
@@ -27,7 +28,8 @@ std::ofstream fout;
 KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool", "o", "SDD.txt", "specify output file name");
 KNOB<UINT64> KnobTruncDist(KNOB_MODE_WRITEONCE, "pintool", "m", "4096", "the truncation distance of SD");
 KNOB<UINT64> KnobIntervalSize(KNOB_MODE_WRITEONCE, "pintool", "i", "10000000", "the interval size");
-KNOB<UINT64> KnobSampleRate(KNOB_MODE_WRITEONCE, "pintool", "s", "20000", "the sample rate"); 
+KNOB<UINT64> KnobSampleRate(KNOB_MODE_WRITEONCE, "pintool", "s", "20000", "the sample rate");
+KNOB<UINT32> KnobSddDiff(KNOB_MODE_WRITEONCE, "pintool", "d", "30", "the maximum difference value of two SDD vector");
 
 #define LOG2
 #define SAMPLE
@@ -73,6 +75,8 @@ public:
 
 	Histogram(int s);
 
+	Histogram(const Histogram<B> & rhs);
+
 	~Histogram();
 
 	void setSize(int s);
@@ -82,6 +86,8 @@ public:
 	void clear();
 
 	void normalize();
+
+	int manhattanDist(const Histogram<B> & rhs);
 
 	B & operator[](const int idx);
 
@@ -95,6 +101,8 @@ public:
 
 	void print(std::ofstream & file);
 };
+
+std::vector<Histogram<> *> phaseTable;
 
 /* stack distance staticstics with sampling */
 class SampleStack
@@ -132,5 +140,26 @@ public:
 
 	void calStackDist(uint64_t addr, Histogram<> * & hist);
 };
+
+VOID PIN_FAST_ANALYSIS_CALL
+RecordMemRefs(VOID * loca, VOID * a);
+
+// This function is called before every instruction is executed
+VOID PIN_FAST_ANALYSIS_CALL 
+doDump(VOID * a);
+
+/*
+ * Insert code to write data to a thread-specific buffer for instructions
+ * that access memory.
+ */
+VOID Trace(TRACE trace, VOID * a);
+
+/* output the results, and free the poiters */
+VOID Fini(INT32 code, VOID * a);
+
+/* ===================================================================== */
+/* Print Help Message                                                    */
+/* ===================================================================== */
+INT32 Usage();
 
 #endif

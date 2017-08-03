@@ -1,4 +1,12 @@
-Extract the stack distance distribution with no sampling technique.
+A Pin Tool: Extract the stack distance distribution with sampling technique.
+===================================================================
+This is a tool to get SDD based on Intel Pin-2.14, linux version.
+put this directory in pin-2.14-71313-gcc.4.4.7-linux\source\tools,
+and use it as a pin tool.
+The program for calculating cache miss rate is in subdirectory ./calMissRate
+the subdirectory ./gcc ./bzip2 is a SPEC2006 benchmark.
+
+
 This program generates the SDD input for calMissRate program.
 ===================================================================
 the arguments:

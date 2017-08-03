@@ -14,6 +14,14 @@ Histogram<B>::Histogram(int s) : samples(0), _size(s)
 }
 
 template <class B>
+Histogram<B>::Histogram(const Histogram<B> & rhs) : samples(rhs.samples), _size(rhs._size)
+{
+    bins = new B[_size];
+    for (int i = 0; i < _size; ++i)
+        bins[i] = rhs.bins[i];
+}
+
+template <class B>
 Histogram<B>::~Histogram() { delete [] bins; }
 
 template <class B>
@@ -51,6 +59,19 @@ void Histogram<B>::normalize()
     for (int i = 0; i < _size; ++i)
         bins[i] /= samples;
 }
+
+template <class B>
+int Histogram<B>::manhattanDist(const Histogram<B> & rhs)
+{
+    assert(_size == rhs._size);
+
+    int dist = 0;
+    for (int i = 0; i < _size; ++i)
+        dist += std::abs(bins[i] - rhs.bins[i]);
+
+    return dist;
+}
+
 
 template <class B>
 B & Histogram<B>::operator[](const int idx)
@@ -206,38 +227,63 @@ void SampleStack::calStackDist(uint64_t addr, Histogram<> * & hist)
         --sampleCounter;
 }
 
-VOID RecordMemRefs(VOID * ip, VOID * loca, VOID * sStack, VOID * cHist)
+VOID PIN_FAST_ANALYSIS_CALL
+RecordMemRefs(VOID * loca, VOID * a)
 {
     ++NumMemAccs;
+    ++Counter;
     /* cast void poiters */
     uint64_t addr = reinterpret_cast<uint64_t> (loca);
-    SampleStack * sampleStack = static_cast<SampleStack *> (sStack);
-    Histogram<> * currSDD = static_cast<Histogram<> *> (cHist);
+    Arguments * args = static_cast<Arguments *> (a);
+    SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
+    Histogram<> * currSDD = static_cast<Histogram<> *> (args->second);
     
     uint64_t mask = 63;
 	sampleStack->calStackDist(addr & (~mask), currSDD);
 }
 
 // This function is called before every instruction is executed
-VOID PIN_FAST_ANALYSIS_CALL 
-doDump(UINT32 c, VOID * sStack, VOID * cHist, VOID * tHist)
+VOID PIN_FAST_ANALYSIS_CALL
+doDump(VOID * a)
 {
-    NumInsts += c;
-    //if (NumInsts >= IntervalSize) {
-    if (NumMemAccs >= IntervalSize) {
-        NumInsts = 0;
+    if (Counter >= IntervalSize) {
+        Counter = 0;
         ++NumIntervals;
-        NumMemAccs = 0;
-        SampleStack * sampleStack = static_cast<SampleStack *> (sStack);
-        Histogram<> * currSDD = static_cast<Histogram<> *> (cHist);
-        Histogram<> * totalSDD = static_cast<Histogram<> *> (tHist);
+        Arguments * args = static_cast<Arguments *> (a);
+        SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
+        Histogram<> * currSDD = static_cast<Histogram<> *> (args->second);
+        Histogram<> * totalSDD = static_cast<Histogram<> *> (args->third);
         /* sum the current SDD to total SDD */
         *totalSDD += *currSDD;
+
+#ifdef PREDIC
+        uint32_t distMin = INT_MAX;
+        //uint32_t idxMin;
+        /* search for a similar SDD of a phase */
+        for (uint32_t i = 0; i < phaseTable.size(); ++i) {
+            uint32_t dist = phaseTable[i]->manhattanDist(*currSDD);
+            if (dist < distMin) {
+                distMin = dist;
+                //idxMin = i;
+            }
+        }
+        if (distMin > SddDiff) {
+            Histogram<> * item = new Histogram<>(*currSDD);
+            phaseTable.push_back(item);
+        }
+        else 
+#endif
 
         //currSDD->print(fout);
         sampleStack->clear();
         currSDD->clear();
         std::cout << "==== " << NumIntervals << "th interval ====" << std::endl;
+    }
+
+    /* if we got a maximum memory references, just exit this program */
+    if (NumMemAccs >= 50000000000) {
+        Fini(0, a);
+        exit (0);
     }
 }
 
@@ -248,7 +294,7 @@ doDump(UINT32 c, VOID * sStack, VOID * cHist, VOID * tHist)
 VOID Trace(TRACE trace, VOID * a)
 //VOID PIN_FAST_ANALYSIS_CALL Instruction(INS ins, VOID *v)
 {   
-    Arguments * args = static_cast<Arguments *> (a);
+    //Arguments * args = static_cast<Arguments *> (a);
     // Insert a call to record the effective address.
     for(BBL bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl=BBL_Next(bbl))
     {
@@ -257,36 +303,33 @@ VOID Trace(TRACE trace, VOID * a)
             //if(INS_IsMemoryRead(ins) && INS_IsStandardMemop(ins))
             if(INS_IsMemoryRead(ins)) // include vector load/store, by shen
             {
-                INS_InsertPredicatedCall(
-                ins, IPOINT_BEFORE, (AFUNPTR)RecordMemRefs,
-                IARG_INST_PTR,
+                INS_InsertCall(
+                ins, IPOINT_BEFORE, 
+                (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL, 
                 IARG_MEMORYREAD_EA,
-                IARG_PTR, args->first,
-                IARG_PTR, args->second,
+                IARG_PTR, a,
                 IARG_END);
             }
 
             //if (INS_HasMemoryRead2(ins) && INS_IsStandardMemop(ins))
             if(INS_HasMemoryRead2(ins)) // include vector load/store, by shen
             {   
-                INS_InsertPredicatedCall(
-                ins, IPOINT_BEFORE, (AFUNPTR)RecordMemRefs,
-                IARG_INST_PTR,
+                INS_InsertCall(
+                ins, IPOINT_BEFORE, 
+                (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL, 
                 IARG_MEMORYREAD2_EA,
-                IARG_PTR, args->first,
-                IARG_PTR, args->second,
+                IARG_PTR, a,
                 IARG_END);
             }
 
             //if(INS_IsMemoryWrite(ins) && INS_IsStandardMemop(ins))
             if(INS_IsMemoryWrite(ins)) // include vector load/store, by shen
             {
-                INS_InsertPredicatedCall(
-                ins, IPOINT_BEFORE, (AFUNPTR)RecordMemRefs,
-                IARG_INST_PTR,
+                INS_InsertCall(
+                ins, IPOINT_BEFORE, 
+                (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL, 
                 IARG_MEMORYWRITE_EA,
-                IARG_PTR, args->first,
-                IARG_PTR, args->second,
+                IARG_PTR, a,
                 IARG_END);
             }
         }
@@ -295,11 +338,8 @@ VOID Trace(TRACE trace, VOID * a)
         // IPOINT_ANYWHERE allows Pin to schedule the call anywhere in the bbl to obtain best performance.
         // Use a fast linkage for the call.
         BBL_InsertCall(bbl, IPOINT_ANYWHERE, 
-        (AFUNPTR)doDump, IARG_FAST_ANALYSIS_CALL, 
-        IARG_UINT32, BBL_NumIns(bbl), 
-        IARG_PTR, args->first,
-        IARG_PTR, args->second,
-        IARG_PTR, args->third, 
+        (AFUNPTR)doDump, IARG_FAST_ANALYSIS_CALL,
+        IARG_PTR, a,
         IARG_END);
     }
 }
@@ -307,7 +347,6 @@ VOID Trace(TRACE trace, VOID * a)
 /* output the results, and free the poiters */
 VOID Fini(INT32 code, VOID * a)
 {
-    std::cout << "enter Fini\n";
     Arguments * args = static_cast<Arguments *> (a);
     /* cast the void poiters */
     SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
@@ -319,16 +358,19 @@ VOID Fini(INT32 code, VOID * a)
     totalSDD->print(fout);
     ++NumIntervals;
 
-    //std::ofstream fDist("ManhattanDistance.txt", std::ios::out);
-    //for (uint32_t i = 0; i < manhattanDist.size(); ++i)
-        //fDist << std::setprecision(6) << manhattanDist[i] << std::endl;
-
     fout.close();
     /* free pointers */
     delete sampleStack;
     delete currSDD;
     delete totalSDD;
     delete args;
+
+#ifdef PREDIC
+    for (unsigned int i = 0; i < phaseTable.size(); ++i)
+        delete phaseTable[i];
+
+    std::cout << "phase table size " << phaseTable.size() << std::endl;
+#endif
     std::cout << "Total memory accesses " << NumMemAccs << std::endl;
 }
 
@@ -353,6 +395,7 @@ int main(int argc, char *argv[])
 
     IntervalSize = KnobIntervalSize.Value();
     Truncation = KnobTruncDist.Value();
+    SddDiff = KnobSddDiff.Value();
     /* out put file open */
     fout.open(KnobOutputFile.Value().c_str(), std::ios::out | std::ios::binary);
     if (fout.fail()) {
@@ -382,7 +425,6 @@ int main(int argc, char *argv[])
 
     /* when the instrucments finish, call this API */
     PIN_AddFiniFunction(Fini, static_cast<VOID *> (args));
-    //PIN_AddFiniFunction(Fini, 0);
 
     // Never returns
     PIN_StartProgram();

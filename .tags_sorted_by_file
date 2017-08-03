@@ -15,6 +15,7 @@ reuseDistToStackDist	calMissRate\calcMissRate.cpp	/^void Histogram<B, Accur>::re
 sample	calMissRate\calcMissRate.cpp	/^void Histogram<B, Accur>::sample(B x)$/;"	f	class:Histogram
 Histogram	calMissRate\calcMissRate.h	/^	Histogram() : samples(0), hits(0), missRate(0.0) {};$/;"	f	class:Histogram
 Histogram	calMissRate\calcMissRate.h	/^class Histogram$/;"	c
+LOG	calMissRate\calcMissRate.h	19;"	d
 MaxDist	calMissRate\calcMissRate.h	/^static int64_t MaxDist = 0;$/;"	v
 Reader	calMissRate\calcMissRate.h	/^class Reader$/;"	c
 Trunc	calMissRate\calcMissRate.h	/^static int64_t Trunc = 0;$/;"	v
@@ -78,41 +79,45 @@ spec_mode	gcc\166.s	/^spec_mode:$/;"	l
 twolev_config	gcc\166.s	/^twolev_config:$/;"	l
 twolev_nelt	gcc\166.s	/^twolev_nelt:$/;"	l
 Fini	memTraceSimple.cpp	/^VOID Fini(INT32 code, VOID * a)$/;"	f
+Histogram	memTraceSimple.cpp	/^Histogram<B>::Histogram(const Histogram<B> & rhs) : samples(rhs.samples), _size(rhs._size)$/;"	f	class:Histogram
 Histogram	memTraceSimple.cpp	/^Histogram<B>::Histogram(int s) : samples(0), _size(s)$/;"	f	class:Histogram
-RecordMemRefs	memTraceSimple.cpp	/^VOID RecordMemRefs(VOID * ip, VOID * loca, VOID * sStack, VOID * hist)$/;"	f
+RecordMemRefs	memTraceSimple.cpp	/^RecordMemRefs(VOID * ip, VOID * loca, VOID * sStack, VOID * cHist)$/;"	f
 Trace	memTraceSimple.cpp	/^VOID Trace(TRACE trace, VOID * a)$/;"	f
 Usage	memTraceSimple.cpp	/^INT32 Usage()$/;"	f
 calStackDist	memTraceSimple.cpp	/^void SampleStack::calStackDist(uint64_t addr, Histogram<> * & hist)$/;"	f	class:SampleStack
 clear	memTraceSimple.cpp	/^void Histogram<B>::clear()$/;"	f	class:Histogram
 clear	memTraceSimple.cpp	/^void SampleStack::clear()$/;"	f	class:SampleStack
-doDump	memTraceSimple.cpp	/^doDump(UINT32 c, VOID * sStack)$/;"	f
+doDump	memTraceSimple.cpp	/^doDump(UINT32 c, VOID * sStack, VOID * cHist, VOID * tHist)$/;"	f
 genRandom	memTraceSimple.cpp	/^int SampleStack::genRandom()$/;"	f	class:SampleStack
 hibernating	memTraceSimple.cpp	/^state(State::hibernating), sampleRate(sRate) {};$/;"	v
-lastPhase	memTraceSimple.cpp	/^Histogram<> lastPhase;$/;"	v
 main	memTraceSimple.cpp	/^int main(int argc, char *argv[])$/;"	f
-print	memTraceSimple.cpp	/^void Histogram<B>::print(std::ofstream * & file)$/;"	f	class:Histogram
+manhattanDist	memTraceSimple.cpp	/^int Histogram<B>::manhattanDist(const Histogram<B> & rhs)$/;"	f	class:Histogram
+normalize	memTraceSimple.cpp	/^void Histogram<B>::normalize()$/;"	f	class:Histogram
+operator +=	memTraceSimple.cpp	/^Histogram<B> & Histogram<B>::operator+=(const Histogram<B> & rhs)$/;"	f	class:Histogram
+operator =	memTraceSimple.cpp	/^Histogram<B> & Histogram<B>::operator=(const Histogram<B> & rhs)$/;"	f	class:Histogram
+operator []	memTraceSimple.cpp	/^B & Histogram<B>::operator[](const int idx)$/;"	f	class:Histogram
+print	memTraceSimple.cpp	/^void Histogram<B>::print(std::ofstream & file)$/;"	f	class:Histogram
 sSize	memTraceSimple.cpp	/^sampleInter(sSize), statusCounter(0), sampleCounter(0), \\$/;"	v
-sample	memTraceSimple.cpp	/^void Histogram<B>::sample(B x)$/;"	f	class:Histogram
-sampleRate	memTraceSimple.cpp	/^sampleCounter(0), state(State::sampling), sampleRate(sRate) {};$/;"	f
+sample	memTraceSimple.cpp	/^void Histogram<B>::sample(int x)$/;"	f	class:Histogram
 sampleRate	memTraceSimple.cpp	/^state(State::hibernating), sampleRate(sRate) {};$/;"	f
 sampling	memTraceSimple.cpp	/^sampleCounter(0), state(State::sampling), sampleRate(0.0) {};$/;"	v
-sampling	memTraceSimple.cpp	/^sampleCounter(0), state(State::sampling), sampleRate(sRate) {};$/;"	v
-setSampleRate	memTraceSimple.cpp	/^void SampleStack::setSampleRate(double s)$/;"	f	class:SampleStack
+sampling	memTraceSimple.cpp	/^sampleCounter(0), state(State::sampling), sampleRate(sRate), residue(0) {};$/;"	v
+setSampleRate	memTraceSimple.cpp	/^void SampleStack::setSampleRate(double s) { sampleRate = s; }$/;"	f	class:SampleStack
 setSize	memTraceSimple.cpp	/^void Histogram<B>::setSize(int s)$/;"	f	class:Histogram
 size	memTraceSimple.cpp	/^const int Histogram<B>::size() const { return _size; }$/;"	f	class:Histogram
-thisPhase	memTraceSimple.cpp	/^Histogram<> thisPhase;$/;"	v
 ~Histogram	memTraceSimple.cpp	/^Histogram<B>::~Histogram() { delete [] bins; }$/;"	f	class:Histogram
 AddrSet	memTraceSimple.h	/^	typedef std::unordered_set<uint64_t> AddrSet;$/;"	t	class:SampleStack
 Arguments	memTraceSimple.h	/^struct Arguments$/;"	s
-DOLOG	memTraceSimple.h	48;"	d
 DOLOG	memTraceSimple.h	50;"	d
-Histogram	memTraceSimple.h	/^	Histogram() : bins(nullptr), samples(0), size(0) {};$/;"	f	class:Histogram
+DOLOG	memTraceSimple.h	52;"	d
+Histogram	memTraceSimple.h	/^	Histogram() : bins(nullptr), samples(0), _size(0) {};$/;"	f	class:Histogram
 Histogram	memTraceSimple.h	/^class Histogram$/;"	c
 IntervalSize	memTraceSimple.h	/^static uint64_t IntervalSize = 0;$/;"	v
+LOG2	memTraceSimple.h	32;"	d
 NumInsts	memTraceSimple.h	/^static uint64_t NumInsts = 0;$/;"	v
 NumIntervals	memTraceSimple.h	/^static uint64_t NumIntervals = 0;$/;"	v
 NumMemAccs	memTraceSimple.h	/^static uint64_t NumMemAccs = 0;$/;"	v
-SAMPLE	memTraceSimple.h	31;"	d
+SAMPLE	memTraceSimple.h	33;"	d
 SampleStack	memTraceSimple.h	/^class SampleStack$/;"	c
 State	memTraceSimple.h	/^	enum State {sampling, hibernating};$/;"	g	class:SampleStack
 Truncation	memTraceSimple.h	/^static uint64_t Truncation = 0;$/;"	v
@@ -121,9 +126,12 @@ _size	memTraceSimple.h	/^	int _size;$/;"	m	class:Histogram
 addrTable	memTraceSimple.h	/^	std::unordered_map<uint64_t, AddrSet> addrTable;$/;"	m	class:SampleStack
 bins	memTraceSimple.h	/^	B * bins;$/;"	m	class:Histogram
 first	memTraceSimple.h	/^	void * first;$/;"	m	struct:Arguments
+fout	memTraceSimple.h	/^std::ofstream fout;$/;"	v
 hibernInter	memTraceSimple.h	/^	int hibernInter;$/;"	m	class:SampleStack
 hibernating	memTraceSimple.h	/^	enum State {sampling, hibernating};$/;"	e	enum:SampleStack::State
 log2p1	memTraceSimple.h	/^inline T log2p1(T s)$/;"	f
+phaseTable	memTraceSimple.h	/^std::vector<Histogram<> *> phaseTable;$/;"	v
+residue	memTraceSimple.h	/^	int residue;$/;"	m	class:SampleStack
 sampleCounter	memTraceSimple.h	/^	uint64_t sampleCounter;$/;"	m	class:SampleStack
 sampleInter	memTraceSimple.h	/^	int sampleInter;$/;"	m	class:SampleStack
 sampleRate	memTraceSimple.h	/^	double sampleRate;$/;"	m	class:SampleStack

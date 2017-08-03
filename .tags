@@ -7,15 +7,18 @@
 AddrSet	.\memTraceSimple.h	/^	typedef std::unordered_set<uint64_t> AddrSet;$/;"	t	class:SampleStack
 Arguments	.\memTraceSimple.h	/^struct Arguments$/;"	s
 CVLINK_NULL	.\gcc\166.s	/^CVLINK_NULL:$/;"	l
-DOLOG	.\memTraceSimple.h	48;"	d
 DOLOG	.\memTraceSimple.h	50;"	d
+DOLOG	.\memTraceSimple.h	52;"	d
 Fini	.\memTraceSimple.cpp	/^VOID Fini(INT32 code, VOID * a)$/;"	f
 Histogram	.\calMissRate\calcMissRate.h	/^	Histogram() : samples(0), hits(0), missRate(0.0) {};$/;"	f	class:Histogram
 Histogram	.\calMissRate\calcMissRate.h	/^class Histogram$/;"	c
+Histogram	.\memTraceSimple.cpp	/^Histogram<B>::Histogram(const Histogram<B> & rhs) : samples(rhs.samples), _size(rhs._size)$/;"	f	class:Histogram
 Histogram	.\memTraceSimple.cpp	/^Histogram<B>::Histogram(int s) : samples(0), _size(s)$/;"	f	class:Histogram
-Histogram	.\memTraceSimple.h	/^	Histogram() : bins(nullptr), samples(0), size(0) {};$/;"	f	class:Histogram
+Histogram	.\memTraceSimple.h	/^	Histogram() : bins(nullptr), samples(0), _size(0) {};$/;"	f	class:Histogram
 Histogram	.\memTraceSimple.h	/^class Histogram$/;"	c
 IntervalSize	.\memTraceSimple.h	/^static uint64_t IntervalSize = 0;$/;"	v
+LOG	.\calMissRate\calcMissRate.h	19;"	d
+LOG2	.\memTraceSimple.h	32;"	d
 LSQ_size	.\gcc\166.s	/^LSQ_size:$/;"	l
 MaxDist	.\calMissRate\calcMissRate.h	/^static int64_t MaxDist = 0;$/;"	v
 NumInsts	.\memTraceSimple.h	/^static uint64_t NumInsts = 0;$/;"	v
@@ -25,8 +28,8 @@ RSLINK_NULL	.\gcc\166.s	/^RSLINK_NULL:$/;"	l
 RUU_size	.\gcc\166.s	/^RUU_size:$/;"	l
 Reader	.\calMissRate\calcMissRate.cpp	/^Reader::Reader(std::ifstream & fin, std::ofstream & fout, int cap, int blk, int assoc) {$/;"	f	class:Reader
 Reader	.\calMissRate\calcMissRate.h	/^class Reader$/;"	c
-RecordMemRefs	.\memTraceSimple.cpp	/^VOID RecordMemRefs(VOID * ip, VOID * loca, VOID * sStack, VOID * hist)$/;"	f
-SAMPLE	.\memTraceSimple.h	31;"	d
+RecordMemRefs	.\memTraceSimple.cpp	/^RecordMemRefs(VOID * ip, VOID * loca, VOID * sStack, VOID * cHist)$/;"	f
+SAMPLE	.\memTraceSimple.h	33;"	d
 SampleStack	.\memTraceSimple.h	/^class SampleStack$/;"	c
 State	.\memTraceSimple.h	/^	enum State {sampling, hibernating};$/;"	g	class:SampleStack
 Trace	.\memTraceSimple.cpp	/^VOID Trace(TRACE trace, VOID * a)$/;"	f
@@ -53,11 +56,12 @@ combinationRatio	.\calMissRate\calcMissRate.cpp	/^inline double combinationRatio
 dep_names	.\gcc\166.s	/^dep_names:$/;"	l
 dl1_access_fn	.\gcc\166.s	/^dl1_access_fn:$/;"	l
 dl2_access_fn	.\gcc\166.s	/^dl2_access_fn:$/;"	l
-doDump	.\memTraceSimple.cpp	/^doDump(UINT32 c, VOID * sStack)$/;"	f
+doDump	.\memTraceSimple.cpp	/^doDump(UINT32 c, VOID * sStack, VOID * cHist, VOID * tHist)$/;"	f
 dtlb_access_fn	.\gcc\166.s	/^dtlb_access_fn:$/;"	l
 eventq_next_event	.\gcc\166.s	/^eventq_next_event:$/;"	l
 fetch_dump	.\gcc\166.s	/^fetch_dump:$/;"	l
 first	.\memTraceSimple.h	/^	void * first;$/;"	m	struct:Arguments
+fout	.\memTraceSimple.h	/^std::ofstream fout;$/;"	v
 fu_config	.\gcc\166.s	/^fu_config:$/;"	l
 fu_pool	.\gcc\166.s	/^fu_pool:$/;"	l
 fullyToSetAssoc	.\calMissRate\calcMissRate.cpp	/^Accur Histogram<B, Accur>::fullyToSetAssoc(const int & cap, const int & blk, const int & assoc)$/;"	f	class:Histogram
@@ -70,7 +74,6 @@ il1_access_fn	.\gcc\166.s	/^il1_access_fn:$/;"	l
 il2_access_fn	.\gcc\166.s	/^il2_access_fn:$/;"	l
 inst_seq	.\gcc\166.s	/^inst_seq:$/;"	l
 itlb_access_fn	.\gcc\166.s	/^itlb_access_fn:$/;"	l
-lastPhase	.\memTraceSimple.cpp	/^Histogram<> lastPhase;$/;"	v
 last_inst_missed	.\gcc\166.s	/^last_inst_missed:$/;"	l
 last_inst_tmissed	.\gcc\166.s	/^last_inst_tmissed:$/;"	l
 last_op	.\gcc\166.s	/^last_op:$/;"	l
@@ -78,36 +81,42 @@ log2p1	.\calMissRate\calcMissRate.cpp	/^inline T log2p1(T s)$/;"	f
 log2p1	.\memTraceSimple.h	/^inline T log2p1(T s)$/;"	f
 main	.\calMissRate\calcMissRate.cpp	/^int main(int argc, char *argv[])$/;"	f
 main	.\memTraceSimple.cpp	/^int main(int argc, char *argv[])$/;"	f
+manhattanDist	.\memTraceSimple.cpp	/^int Histogram<B>::manhattanDist(const Histogram<B> & rhs)$/;"	f	class:Histogram
 mapToVector	.\calMissRate\calcMissRate.cpp	/^bool Histogram<B, Accur>::mapToVector()$/;"	f	class:Histogram
 mapToVector	.\calMissRate\calcMissRate.cpp	/^bool Histogram<B, Accur>::mapToVector(std::vector<B> & buffer)$/;"	f	class:Histogram
 mem_lat	.\gcc\166.s	/^mem_lat:$/;"	l
 mem_nelt	.\gcc\166.s	/^mem_nelt:$/;"	l
 missRate	.\calMissRate\calcMissRate.h	/^	Accur missRate;$/;"	m	class:Histogram
+normalize	.\memTraceSimple.cpp	/^void Histogram<B>::normalize()$/;"	f	class:Histogram
+operator +=	.\memTraceSimple.cpp	/^Histogram<B> & Histogram<B>::operator+=(const Histogram<B> & rhs)$/;"	f	class:Histogram
+operator =	.\memTraceSimple.cpp	/^Histogram<B> & Histogram<B>::operator=(const Histogram<B> & rhs)$/;"	f	class:Histogram
+operator []	.\memTraceSimple.cpp	/^B & Histogram<B>::operator[](const int idx)$/;"	f	class:Histogram
 pcstat_nelt	.\gcc\166.s	/^pcstat_nelt:$/;"	l
+phaseTable	.\memTraceSimple.h	/^std::vector<Histogram<> *> phaseTable;$/;"	v
 pred_perfect	.\gcc\166.s	/^pred_perfect:$/;"	l
 print	.\calMissRate\calcMissRate.cpp	/^void Histogram<B, Accur>::print(std::ofstream & file)$/;"	f	class:Histogram
-print	.\memTraceSimple.cpp	/^void Histogram<B>::print(std::ofstream * & file)$/;"	f	class:Histogram
+print	.\memTraceSimple.cpp	/^void Histogram<B>::print(std::ofstream & file)$/;"	f	class:Histogram
 ptrace_nelt	.\gcc\166.s	/^ptrace_nelt:$/;"	l
 ptrace_seq	.\gcc\166.s	/^ptrace_seq:$/;"	l
+residue	.\memTraceSimple.h	/^	int residue;$/;"	m	class:SampleStack
 reuseDistToStackDist	.\calMissRate\calcMissRate.cpp	/^void Histogram<B, Accur>::reuseDistToStackDist()$/;"	f	class:Histogram
 ruu_dispatch	.\gcc\166.s	/^ruu_dispatch:$/;"	l
 ruu_fetch_issue_delay	.\gcc\166.s	/^ruu_fetch_issue_delay:$/;"	l
 ruu_include_spec	.\gcc\166.s	/^ruu_include_spec:$/;"	l
 sSize	.\memTraceSimple.cpp	/^sampleInter(sSize), statusCounter(0), sampleCounter(0), \\$/;"	v
 sample	.\calMissRate\calcMissRate.cpp	/^void Histogram<B, Accur>::sample(B x)$/;"	f	class:Histogram
-sample	.\memTraceSimple.cpp	/^void Histogram<B>::sample(B x)$/;"	f	class:Histogram
+sample	.\memTraceSimple.cpp	/^void Histogram<B>::sample(int x)$/;"	f	class:Histogram
 sampleCounter	.\memTraceSimple.h	/^	uint64_t sampleCounter;$/;"	m	class:SampleStack
 sampleInter	.\memTraceSimple.h	/^	int sampleInter;$/;"	m	class:SampleStack
-sampleRate	.\memTraceSimple.cpp	/^sampleCounter(0), state(State::sampling), sampleRate(sRate) {};$/;"	f
 sampleRate	.\memTraceSimple.cpp	/^state(State::hibernating), sampleRate(sRate) {};$/;"	f
 sampleRate	.\memTraceSimple.h	/^	double sampleRate;$/;"	m	class:SampleStack
 samples	.\calMissRate\calcMissRate.h	/^	B samples;$/;"	m	class:Histogram
 samples	.\memTraceSimple.h	/^	B samples;$/;"	m	class:Histogram
 sampling	.\memTraceSimple.cpp	/^sampleCounter(0), state(State::sampling), sampleRate(0.0) {};$/;"	v
-sampling	.\memTraceSimple.cpp	/^sampleCounter(0), state(State::sampling), sampleRate(sRate) {};$/;"	v
+sampling	.\memTraceSimple.cpp	/^sampleCounter(0), state(State::sampling), sampleRate(sRate), residue(0) {};$/;"	v
 sampling	.\memTraceSimple.h	/^	enum State {sampling, hibernating};$/;"	e	enum:SampleStack::State
 second	.\memTraceSimple.h	/^	void * second;$/;"	m	struct:Arguments
-setSampleRate	.\memTraceSimple.cpp	/^void SampleStack::setSampleRate(double s)$/;"	f	class:SampleStack
+setSampleRate	.\memTraceSimple.cpp	/^void SampleStack::setSampleRate(double s) { sampleRate = s; }$/;"	f	class:SampleStack
 setSize	.\memTraceSimple.cpp	/^void Histogram<B>::setSize(int s)$/;"	f	class:Histogram
 sim_aux_config	.\gcc\166.s	/^sim_aux_config:$/;"	l
 sim_aux_stats	.\gcc\166.s	/^sim_aux_stats:$/;"	l
@@ -134,7 +143,6 @@ spec_mode	.\gcc\166.s	/^spec_mode:$/;"	l
 state	.\memTraceSimple.h	/^	State state;$/;"	m	class:SampleStack
 statusCounter	.\memTraceSimple.h	/^	uint64_t statusCounter;$/;"	m	class:SampleStack
 third	.\memTraceSimple.h	/^	void * third;$/;"	m	struct:Arguments
-thisPhase	.\memTraceSimple.cpp	/^Histogram<> thisPhase;$/;"	v
 twolev_config	.\gcc\166.s	/^twolev_config:$/;"	l
 twolev_nelt	.\gcc\166.s	/^twolev_nelt:$/;"	l
 ~Histogram	.\calMissRate\calcMissRate.h	/^	~Histogram() {};$/;"	f	class:Histogram

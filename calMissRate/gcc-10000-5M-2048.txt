@@ -1,0 +1,295 @@
+input file is ../gcc/sample-10000-5M-trunc-2048.txt
+cache capacity 8192
+block size 64
+associativity 2
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0880795
+cache capacity 8192
+block size 64
+associativity 4
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0831472
+cache capacity 8192
+block size 64
+associativity 8
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.081482
+cache capacity 8192
+block size 64
+associativity 16
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0808097
+cache capacity 8192
+block size 64
+associativity 32
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.080438
+cache capacity 8192
+block size 64
+associativity 64
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0801486
+cache capacity 16384
+block size 64
+associativity 2
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0789887
+cache capacity 16384
+block size 64
+associativity 4
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0766026
+cache capacity 16384
+block size 64
+associativity 8
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0760621
+cache capacity 16384
+block size 64
+associativity 16
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0759497
+cache capacity 16384
+block size 64
+associativity 32
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0759262
+cache capacity 16384
+block size 64
+associativity 64
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0759126
+cache capacity 32768
+block size 64
+associativity 2
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0721095
+cache capacity 32768
+block size 64
+associativity 4
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0705162
+cache capacity 32768
+block size 64
+associativity 8
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.06991
+cache capacity 32768
+block size 64
+associativity 16
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0695702
+cache capacity 32768
+block size 64
+associativity 32
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0693299
+cache capacity 32768
+block size 64
+associativity 64
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0691502
+cache capacity 65536
+block size 64
+associativity 2
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0666513
+cache capacity 65536
+block size 64
+associativity 4
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0650244
+cache capacity 65536
+block size 64
+associativity 8
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0642027
+cache capacity 65536
+block size 64
+associativity 16
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0637076
+cache capacity 65536
+block size 64
+associativity 32
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0633866
+cache capacity 65536
+block size 64
+associativity 64
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0631643
+cache capacity 131072
+block size 64
+associativity 2
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0632298
+cache capacity 131072
+block size 64
+associativity 4
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0619919
+cache capacity 131072
+block size 64
+associativity 8
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0614371
+cache capacity 131072
+block size 64
+associativity 16
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0612192
+cache capacity 131072
+block size 64
+associativity 32
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0610866
+cache capacity 131072
+block size 64
+associativity 64
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0609946
+cache capacity 262144
+block size 64
+associativity 2
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0616529
+cache capacity 262144
+block size 64
+associativity 4
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.061037
+cache capacity 262144
+block size 64
+associativity 8
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0608648
+cache capacity 262144
+block size 64
+associativity 16
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0607614
+cache capacity 262144
+block size 64
+associativity 32
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0607558
+cache capacity 262144
+block size 64
+associativity 64
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0607558
+cache capacity 524288
+block size 64
+associativity 2
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0610851
+cache capacity 524288
+block size 64
+associativity 4
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0608443
+cache capacity 524288
+block size 64
+associativity 8
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0607558
+cache capacity 524288
+block size 64
+associativity 16
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0607558
+cache capacity 524288
+block size 64
+associativity 32
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0607558
+cache capacity 524288
+block size 64
+associativity 64
+truncation distance 2048
+input file ../gcc/sample-10000-5M-trunc-2048.txt
+output file test.dump
+0.0607558
