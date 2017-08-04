@@ -20,7 +20,7 @@ static uint64_t Counter = 0;
 static uint64_t NumMemAccs = 0;
 static uint64_t NumIntervals = 0;
 static uint64_t IntervalSize = 0;
-static uint32_t SddDiff = 0;
+
 std::ofstream fout;
 //std::vector<double> manhattanDist;
 
@@ -29,7 +29,6 @@ KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool", "o", "SDD.txt", "spe
 KNOB<UINT64> KnobTruncDist(KNOB_MODE_WRITEONCE, "pintool", "m", "4096", "the truncation distance of SD");
 KNOB<UINT64> KnobIntervalSize(KNOB_MODE_WRITEONCE, "pintool", "i", "10000000", "the interval size");
 KNOB<UINT64> KnobSampleRate(KNOB_MODE_WRITEONCE, "pintool", "s", "20000", "the sample rate");
-KNOB<UINT32> KnobSddDiff(KNOB_MODE_WRITEONCE, "pintool", "d", "30", "the maximum difference value of two SDD vector");
 
 #define LOG2
 #define SAMPLE
