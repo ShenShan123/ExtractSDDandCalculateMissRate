@@ -1,28 +1,28 @@
 Reader	calMissRate\calcMissRate.cpp	/^Reader::Reader(std::ifstream & fin, std::ofstream & fout, int cap, int blk, int assoc) {$/;"	f	class:Reader
-calLruMissRate	calMissRate\calcMissRate.cpp	/^Accur Histogram<B, Accur>::calLruMissRate(const int & cap, const int & blk, const int & assoc)$/;"	f	class:Histogram
+calLruMissRate	calMissRate\calcMissRate.cpp	/^Accur Histogram<B, Accur>::calLruMissRate(const int & cap, const int & blk, const int & assoc, const std::vector<double> & setDistr)$/;"	f	class:Histogram
 calLruMissRatePoisson	calMissRate\calcMissRate.cpp	/^Accur Histogram<B, Accur>::calLruMissRatePoisson(const int & cap, const int & blk, const int & assoc)$/;"	f	class:Histogram
-calMissRate	calMissRate\calcMissRate.cpp	/^Accur Histogram<B, Accur>::calMissRate(const int & cap, const int & blk, const int & assoc, const bool plru)$/;"	f	class:Histogram
+calMissRate	calMissRate\calcMissRate.cpp	/^Accur Histogram<B, Accur>::calMissRate(const int & cap, const int & blk, const int & assoc, const bool plru, const std::vector<double> & setDistr)$/;"	f	class:Histogram
 calPlruMissRate	calMissRate\calcMissRate.cpp	/^Accur Histogram<B, Accur>::calPlruMissRate(const int & cap, const int & blk, const int & assoc)$/;"	f	class:Histogram
 clear	calMissRate\calcMissRate.cpp	/^void Histogram<B, Accur>::clear()$/;"	f	class:Histogram
 combinationRatio	calMissRate\calcMissRate.cpp	/^inline double combinationRatio(int b, int a, int k)$/;"	f
 fullyToSetAssoc	calMissRate\calcMissRate.cpp	/^Accur Histogram<B, Accur>::fullyToSetAssoc(const int & cap, const int & blk, const int & assoc)$/;"	f	class:Histogram
 log2p1	calMissRate\calcMissRate.cpp	/^inline T log2p1(T s)$/;"	f
 main	calMissRate\calcMissRate.cpp	/^int main(int argc, char *argv[])$/;"	f
-mapToVector	calMissRate\calcMissRate.cpp	/^bool Histogram<B, Accur>::mapToVector()$/;"	f	class:Histogram
 mapToVector	calMissRate\calcMissRate.cpp	/^bool Histogram<B, Accur>::mapToVector(std::vector<B> & buffer)$/;"	f	class:Histogram
 print	calMissRate\calcMissRate.cpp	/^void Histogram<B, Accur>::print(std::ofstream & file)$/;"	f	class:Histogram
 reuseDistToStackDist	calMissRate\calcMissRate.cpp	/^void Histogram<B, Accur>::reuseDistToStackDist()$/;"	f	class:Histogram
-sample	calMissRate\calcMissRate.cpp	/^void Histogram<B, Accur>::sample(B x)$/;"	f	class:Histogram
+DOLOG	calMissRate\calcMissRate.h	28;"	d
+DOLOG	calMissRate\calcMissRate.h	30;"	d
 Histogram	calMissRate\calcMissRate.h	/^	Histogram() : samples(0), hits(0), missRate(0.0) {};$/;"	f	class:Histogram
 Histogram	calMissRate\calcMissRate.h	/^class Histogram$/;"	c
-LOG	calMissRate\calcMissRate.h	19;"	d
+LOG2	calMissRate\calcMissRate.h	19;"	d
+MAXSETNUM	calMissRate\calcMissRate.h	20;"	d
 MaxDist	calMissRate\calcMissRate.h	/^static int64_t MaxDist = 0;$/;"	v
 Reader	calMissRate\calcMissRate.h	/^class Reader$/;"	c
 Trunc	calMissRate\calcMissRate.h	/^static int64_t Trunc = 0;$/;"	v
-binsMap	calMissRate\calcMissRate.h	/^	std::map<long, B> binsMap;$/;"	m	class:Histogram
 binsTra	calMissRate\calcMissRate.h	/^	std::vector<Accur> binsTra;$/;"	m	class:Histogram
 binsVec	calMissRate\calcMissRate.h	/^	std::vector<Accur> binsVec;$/;"	m	class:Histogram
-hits	calMissRate\calcMissRate.h	/^	B hits;$/;"	m	class:Histogram
+hits	calMissRate\calcMissRate.h	/^	Accur hits;$/;"	m	class:Histogram
 missRate	calMissRate\calcMissRate.h	/^	Accur missRate;$/;"	m	class:Histogram
 samples	calMissRate\calcMissRate.h	/^	B samples;$/;"	m	class:Histogram
 ~Histogram	calMissRate\calcMissRate.h	/^	~Histogram() {};$/;"	f	class:Histogram
@@ -81,13 +81,13 @@ twolev_nelt	gcc\166.s	/^twolev_nelt:$/;"	l
 Fini	memTraceSimple.cpp	/^VOID Fini(INT32 code, VOID * a)$/;"	f
 Histogram	memTraceSimple.cpp	/^Histogram<B>::Histogram(const Histogram<B> & rhs) : samples(rhs.samples), _size(rhs._size)$/;"	f	class:Histogram
 Histogram	memTraceSimple.cpp	/^Histogram<B>::Histogram(int s) : samples(0), _size(s)$/;"	f	class:Histogram
-RecordMemRefs	memTraceSimple.cpp	/^RecordMemRefs(VOID * ip, VOID * loca, VOID * sStack, VOID * cHist)$/;"	f
+RecordMemRefs	memTraceSimple.cpp	/^RecordMemRefs(VOID * loca, VOID * a)$/;"	f
 Trace	memTraceSimple.cpp	/^VOID Trace(TRACE trace, VOID * a)$/;"	f
 Usage	memTraceSimple.cpp	/^INT32 Usage()$/;"	f
 calStackDist	memTraceSimple.cpp	/^void SampleStack::calStackDist(uint64_t addr, Histogram<> * & hist)$/;"	f	class:SampleStack
 clear	memTraceSimple.cpp	/^void Histogram<B>::clear()$/;"	f	class:Histogram
 clear	memTraceSimple.cpp	/^void SampleStack::clear()$/;"	f	class:SampleStack
-doDump	memTraceSimple.cpp	/^doDump(UINT32 c, VOID * sStack, VOID * cHist, VOID * tHist)$/;"	f
+doDump	memTraceSimple.cpp	/^doDump(VOID * a)$/;"	f
 genRandom	memTraceSimple.cpp	/^int SampleStack::genRandom()$/;"	f	class:SampleStack
 hibernating	memTraceSimple.cpp	/^state(State::hibernating), sampleRate(sRate) {};$/;"	v
 main	memTraceSimple.cpp	/^int main(int argc, char *argv[])$/;"	f
@@ -108,23 +108,26 @@ size	memTraceSimple.cpp	/^const int Histogram<B>::size() const { return _size; }
 ~Histogram	memTraceSimple.cpp	/^Histogram<B>::~Histogram() { delete [] bins; }$/;"	f	class:Histogram
 AddrSet	memTraceSimple.h	/^	typedef std::unordered_set<uint64_t> AddrSet;$/;"	t	class:SampleStack
 Arguments	memTraceSimple.h	/^struct Arguments$/;"	s
-DOLOG	memTraceSimple.h	50;"	d
-DOLOG	memTraceSimple.h	52;"	d
+Counter	memTraceSimple.h	/^static uint64_t Counter = 0;$/;"	v
+DOLOG	memTraceSimple.h	55;"	d
+DOLOG	memTraceSimple.h	57;"	d
 Histogram	memTraceSimple.h	/^	Histogram() : bins(nullptr), samples(0), _size(0) {};$/;"	f	class:Histogram
 Histogram	memTraceSimple.h	/^class Histogram$/;"	c
 IntervalSize	memTraceSimple.h	/^static uint64_t IntervalSize = 0;$/;"	v
-LOG2	memTraceSimple.h	32;"	d
-NumInsts	memTraceSimple.h	/^static uint64_t NumInsts = 0;$/;"	v
+LOG2	memTraceSimple.h	37;"	d
+MAXSETNUM	memTraceSimple.h	17;"	d
 NumIntervals	memTraceSimple.h	/^static uint64_t NumIntervals = 0;$/;"	v
 NumMemAccs	memTraceSimple.h	/^static uint64_t NumMemAccs = 0;$/;"	v
-SAMPLE	memTraceSimple.h	33;"	d
+SAMPLE	memTraceSimple.h	38;"	d
 SampleStack	memTraceSimple.h	/^class SampleStack$/;"	c
+SddDiff	memTraceSimple.h	/^static uint32_t SddDiff = 0;$/;"	v
 State	memTraceSimple.h	/^	enum State {sampling, hibernating};$/;"	g	class:SampleStack
 Truncation	memTraceSimple.h	/^static uint64_t Truncation = 0;$/;"	v
 __MEM_TRACE_SIMPLE_H__	memTraceSimple.h	2;"	d
 _size	memTraceSimple.h	/^	int _size;$/;"	m	class:Histogram
 addrTable	memTraceSimple.h	/^	std::unordered_map<uint64_t, AddrSet> addrTable;$/;"	m	class:SampleStack
 bins	memTraceSimple.h	/^	B * bins;$/;"	m	class:Histogram
+blkBits	memTraceSimple.h	/^static uint64_t blkBits = 6;$/;"	v
 first	memTraceSimple.h	/^	void * first;$/;"	m	struct:Arguments
 fout	memTraceSimple.h	/^std::ofstream fout;$/;"	v
 hibernInter	memTraceSimple.h	/^	int hibernInter;$/;"	m	class:SampleStack

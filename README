@@ -11,9 +11,9 @@ This program generates the SDD input for calMissRate program.
 ===================================================================
 the arguments:
 -o output file path, default SDD.txt
--m truncation distance, default 4K
+-m truncation distance, default 2K
 -i interval size, default 10M
--s sample rate, default 20000, i.e. 5e-5
+-s sample rate, default 10000, i.e. 1e-4
 
 For example:
 $ cd gcc-trace

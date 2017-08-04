@@ -227,6 +227,9 @@ void SampleStack::calStackDist(uint64_t addr, Histogram<> * & hist)
         --sampleCounter;
 }
 
+
+Histogram<> SetDistr(MAXSETNUM);
+
 VOID PIN_FAST_ANALYSIS_CALL
 RecordMemRefs(VOID * loca, VOID * a)
 {
@@ -235,11 +238,12 @@ RecordMemRefs(VOID * loca, VOID * a)
     /* cast void poiters */
     uint64_t addr = reinterpret_cast<uint64_t> (loca);
     Arguments * args = static_cast<Arguments *> (a);
-    SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
+    //SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
     Histogram<> * currSDD = static_cast<Histogram<> *> (args->second);
     
-    uint64_t mask = 63;
-	sampleStack->calStackDist(addr & (~mask), currSDD);
+	//sampleStack->calStackDist(addr >> blkBits, currSDD);
+    avlTreeStack.calStackDist(addr >> blkBits, *currSDD);
+    SetDistr.sample((addr >> blkBits) & (MAXSETNUM - 1));
 }
 
 // This function is called before every instruction is executed
@@ -250,7 +254,7 @@ doDump(VOID * a)
         Counter = 0;
         ++NumIntervals;
         Arguments * args = static_cast<Arguments *> (a);
-        SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
+        //SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
         Histogram<> * currSDD = static_cast<Histogram<> *> (args->second);
         Histogram<> * totalSDD = static_cast<Histogram<> *> (args->third);
         /* sum the current SDD to total SDD */
@@ -275,7 +279,8 @@ doDump(VOID * a)
 #endif
 
         //currSDD->print(fout);
-        sampleStack->clear();
+        //sampleStack->clear();
+        avlTreeStack.clear();
         currSDD->clear();
         std::cout << "==== " << NumIntervals << "th interval ====" << std::endl;
     }
@@ -355,6 +360,7 @@ VOID Fini(INT32 code, VOID * a)
     /* sum the current SDD to total SDD */
     *totalSDD += *currSDD;
     //currSDD->print(fout);
+    SetDistr.print(fout);
     totalSDD->print(fout);
     ++NumIntervals;
 
