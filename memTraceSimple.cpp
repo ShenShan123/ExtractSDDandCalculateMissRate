@@ -61,15 +61,16 @@ void Histogram<B>::normalize()
 }
 
 template <class B>
-int Histogram<B>::manhattanDist(const Histogram<B> & rhs)
+double Histogram<B>::manhattanDist(const Histogram<B> & rhs)
 {
+    std::cout << "_size " << _size << " rhs._size " << rhs._size << std::endl;
     assert(_size == rhs._size);
 
-    int dist = 0;
-    for (int i = 0; i < _size; ++i)
+    B dist = 0;
+    for (uint32_t i = 0; i < _size; ++i)
         dist += std::abs(bins[i] - rhs.bins[i]);
 
-    return dist;
+    return (double)dist / samples;
 }
 
 
@@ -121,185 +122,111 @@ void Histogram<B>::sample(int x)
 template <class B>
 void Histogram<B>::print(std::ofstream & file)
 {
-    file.write((char *)bins, sizeof(B) * _size);
-    //for (int i = 0; i < _size; ++i)
-        //file << bins[i] << " ";
-    //file  << "\n";
+    //file.write((char *)bins, sizeof(B) * _size);
+    for (int i = 0; i < _size; ++i)
+        file << bins[i] << " ";
+    file  << "\n";
 }
 
-SampleStack::SampleStack(int sSize, int hSize, double sRate) : hibernInter(hSize), \
-sampleInter(sSize), statusCounter(0), sampleCounter(0), \
-state(State::hibernating), sampleRate(sRate) {};
-
-SampleStack::SampleStack(double sRate) : hibernInter(0), sampleInter(0), statusCounter(0), \
-sampleCounter(0), state(State::sampling), sampleRate(sRate), residue(0) {};
-
-SampleStack::SampleStack() : hibernInter(0), sampleInter(0), statusCounter(0), \
-sampleCounter(0), state(State::sampling), sampleRate(0.0) {};
-
-void SampleStack::setSampleRate(double s) { sampleRate = s; }
-
-void SampleStack::clear()
+void ReuseDist::calReuseDist(uint64_t addr, Histogram<> & rdv)
 {
-    addrTable.clear();
-    sampleCounter = 0;
+    long & value = addrMap[addr];
+
+    ++index;
+
+    /* value is 0 under cold miss */
+    if (!value) {
+        rdv.sample(DOLOG(Truncation));
+        value = index;
+        return;
+    }
+
+    /* update b of last reference */
+    if (value < index) {
+        uint32_t reuseDist = index - value - 1;
+        reuseDist = reuseDist >= Truncation ? Truncation : reuseDist;
+        rdv.sample(DOLOG(reuseDist));
+    }
+
+    value = index;
 }
 
-int SampleStack::genRandom()
+PhaseTable::Entry::Entry(const Histogram<> & rdv) : phaseRDV(rdv), id(-1), counter(0)
 {
-    // construct a trivial random generator engine from a time-based seed:
-    std::random_device seed;
-    static std::mt19937 engine(seed());
-    //static std::geometric_distribution<int> geom(sampleRate);
-    static std::uniform_int_distribution<int> unif(1, (int) 1 / sampleRate);
-    
-    //int randNum = 0;
-    //while (!randNum)
-        //randNum = geom(engine);
-
-    int randNum = unif(engine);
-    residue = (int) 1 / sampleRate - randNum;
-    return randNum;
+    for (int i = 0; i < phaseRDV.size(); ++i)
+        id ^= phaseRDV[i];
 }
 
-/* the argument hist uses reference is safe, because when calStackDist is return,
-   totalSDD in RecordMemRefs is destroy */
-void SampleStack::calStackDist(uint64_t addr, Histogram<> * & hist)
+PhaseTable::~PhaseTable() 
 {
-#ifdef HIBER
-    /* start a new sampling interval */
-    if (state == State::hibernating && !statusCounter) {
-        statusCounter = sampleInter;
-        sampleCounter = genRandom();
-        state = State::sampling;
-    }
-    /* start hibernation interval */
-    else if (state == State::sampling && !statusCounter) {
-        statusCounter = hibernInter;
-        state = State::hibernating;
-    }
-#endif
+    for (auto it = pt.begin(); it != pt.end(); ++it)
+        delete *it;
+}
 
-    /* if we find a same address x in addrTable,
-    record its stack distance and the sampling of x is finished */
-    auto pos = addrTable.find(addr);
-    if (pos != addrTable.end()) {
-		hist->sample(DOLOG(pos->second.size() - 1));
-        addrTable.erase(addr);
-    }
+uint32_t PhaseTable::find(const Histogram<> & rdv)
+{
+    double distMin = DBL_MAX;
+    Entry * entryPtr = nullptr;
 
-    auto it = addrTable.begin();
+    /* search for a similar RDV of a phase */
+    for (auto it = pt.begin(); it != pt.end(); ++it) {
+        double dist = (*it)->phaseRDV.manhattanDist(rdv);
 
-    /* make sure the max size of addrTable */
-    //if (addrTable.size() > sampleRate * sampleInter * 2) {
-        //hist->sample(log2p1(truncation));
-        //addrTable.erase(it->first);
-    //}
-
-    /* record unique mem references between the sampled address x */
-    for (it = addrTable.begin(); it != addrTable.end(); ) {
-        it->second.insert(addr);
-        /* if the set of sampled address x is too large,
-        erase it from  the table and record as truncation */
-        if (it->second.size() > Truncation) {
-            auto eraseIt = it;
-            ++it;
-            hist->sample(DOLOG(Truncation));
-            addrTable.erase(eraseIt->first);
+        if (dist < distMin) {
+            distMin = dist;
+            entryPtr = *it;
         }
-        else
-            ++it;
     }
 
-    /* if it is time to do sampling */
-    if (state == State::sampling && !sampleCounter) {
-        /* it is a new sampled address */
-        assert(!addrTable[addr].size());
-        addrTable[addr].insert(0);
-        /* reset the sampleCounter and randNum to prepare next sample */
-        sampleCounter = residue;
-        sampleCounter += genRandom();
+    if (distMin < threshold && entryPtr != nullptr) {
+        ++entryPtr->counter;
+        std::cout << "found a similar phase: id " << entryPtr->id << std::endl;
+        return entryPtr->id;
     }
-#ifdef HIBER
-    --statusCounter;
-#endif
-    if (state == State::sampling)
-        --sampleCounter;
+    else {
+        Entry * newEntry = new Entry(rdv);
+        std::cout << "creat a new phase: id " << newEntry->id << std::endl;
+        pt.push_back(newEntry);
+        return 0;
+    }
 }
-
-
-Histogram<> SetDistr(MAXSETNUM);
 
 VOID PIN_FAST_ANALYSIS_CALL
-RecordMemRefs(VOID * loca, VOID * a)
+RecordMemRefs(VOID * loca)
 {
     ++NumMemAccs;
-    ++Counter;
-    /* cast void poiters */
+    ++InterCount;
     uint64_t addr = reinterpret_cast<uint64_t> (loca);
-    Arguments * args = static_cast<Arguments *> (a);
-    //SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
-    Histogram<> * currSDD = static_cast<Histogram<> *> (args->second);
-    
-	//sampleStack->calStackDist(addr >> blkBits, currSDD);
-    avlTreeStack.calStackDist(addr >> blkBits, *currSDD);
-    SetDistr.sample((addr >> blkBits) & (MAXSETNUM - 1));
+    reuseDist.calReuseDist(addr >> BlkBits, currRDD);
 }
 
 // This function is called before every instruction is executed
 VOID PIN_FAST_ANALYSIS_CALL
-doDump(VOID * a)
+doDump()
 {
-    if (Counter >= IntervalSize) {
-        Counter = 0;
+    if (InterCount >= IntervalSize) {
+        InterCount = 0;
         ++NumIntervals;
-        Arguments * args = static_cast<Arguments *> (a);
-        //SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
-        Histogram<> * currSDD = static_cast<Histogram<> *> (args->second);
-        Histogram<> * totalSDD = static_cast<Histogram<> *> (args->third);
-        /* sum the current SDD to total SDD */
-        *totalSDD += *currSDD;
 
-#ifdef PREDIC
-        uint32_t distMin = INT_MAX;
-        //uint32_t idxMin;
-        /* search for a similar SDD of a phase */
-        for (uint32_t i = 0; i < phaseTable.size(); ++i) {
-            uint32_t dist = phaseTable[i]->manhattanDist(*currSDD);
-            if (dist < distMin) {
-                distMin = dist;
-                //idxMin = i;
-            }
-        }
-        if (distMin > SddDiff) {
-            Histogram<> * item = new Histogram<>(*currSDD);
-            phaseTable.push_back(item);
-        }
-        else 
-#endif
-
-        //currSDD->print(fout);
-        //sampleStack->clear();
-        avlTreeStack.clear();
-        currSDD->clear();
+        uint32_t id = phaseTable.find(currRDD);
+        currRDD.clear();
         std::cout << "==== " << NumIntervals << "th interval ====" << std::endl;
     }
 
     /* if we got a maximum memory references, just exit this program */
-    if (NumMemAccs >= 50000000000) {
-        Fini(0, a);
-        exit (0);
-    }
+    //if (NumMemAccs >= 50000000000) {
+        //Fini(0, a);
+        //exit (0);
+    //}
 }
 
 /*
  * Insert code to write data to a thread-specific buffer for instructions
  * that access memory.
  */
-VOID Trace(TRACE trace, VOID * a)
+VOID Trace(TRACE trace, VOID * v)
 //VOID PIN_FAST_ANALYSIS_CALL Instruction(INS ins, VOID *v)
 {   
-    //Arguments * args = static_cast<Arguments *> (a);
     // Insert a call to record the effective address.
     for(BBL bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl=BBL_Next(bbl))
     {
@@ -312,7 +239,6 @@ VOID Trace(TRACE trace, VOID * a)
                 ins, IPOINT_BEFORE, 
                 (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL, 
                 IARG_MEMORYREAD_EA,
-                IARG_PTR, a,
                 IARG_END);
             }
 
@@ -323,7 +249,6 @@ VOID Trace(TRACE trace, VOID * a)
                 ins, IPOINT_BEFORE, 
                 (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL, 
                 IARG_MEMORYREAD2_EA,
-                IARG_PTR, a,
                 IARG_END);
             }
 
@@ -334,7 +259,6 @@ VOID Trace(TRACE trace, VOID * a)
                 ins, IPOINT_BEFORE, 
                 (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL, 
                 IARG_MEMORYWRITE_EA,
-                IARG_PTR, a,
                 IARG_END);
             }
         }
@@ -344,46 +268,28 @@ VOID Trace(TRACE trace, VOID * a)
         // Use a fast linkage for the call.
         BBL_InsertCall(bbl, IPOINT_ANYWHERE, 
         (AFUNPTR)doDump, IARG_FAST_ANALYSIS_CALL,
-        IARG_PTR, a,
         IARG_END);
     }
 }
 
 /* output the results, and free the poiters */
-VOID Fini(INT32 code, VOID * a)
+VOID Fini(INT32 code, VOID *v)
 {
-    Arguments * args = static_cast<Arguments *> (a);
-    /* cast the void poiters */
-    SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
-    Histogram<> * currSDD = static_cast<Histogram<> *> (args->second);
-    Histogram<> * totalSDD = static_cast<Histogram<> *> (args->third);
     /* sum the current SDD to total SDD */
-    *totalSDD += *currSDD;
-    //currSDD->print(fout);
-    SetDistr.print(fout);
-    totalSDD->print(fout);
+    //totalSDD += currRDD;
+    //totalSDD->print(fout);
     ++NumIntervals;
 
     fout.close();
-    /* free pointers */
-    delete sampleStack;
-    delete currSDD;
-    delete totalSDD;
-    delete args;
-
-#ifdef PREDIC
-    for (unsigned int i = 0; i < phaseTable.size(); ++i)
-        delete phaseTable[i];
 
     std::cout << "phase table size " << phaseTable.size() << std::endl;
-#endif
     std::cout << "Total memory accesses " << NumMemAccs << std::endl;
 }
 
 /* ===================================================================== */
 /* Print Help Message                                                    */
 /* ===================================================================== */
-   
+
 INT32 Usage()
 {
     PIN_ERROR( "This Pintool calculate the stack distance of a program.\n" 
@@ -401,7 +307,6 @@ int main(int argc, char *argv[])
 
     IntervalSize = KnobIntervalSize.Value();
     Truncation = KnobTruncDist.Value();
-    SddDiff = KnobSddDiff.Value();
     /* out put file open */
     fout.open(KnobOutputFile.Value().c_str(), std::ios::out | std::ios::binary);
     if (fout.fail()) {
@@ -410,32 +315,21 @@ int main(int argc, char *argv[])
          return -1;
     }
 
-    /* sampleStack does sampling and calculate stack distance */
-    SampleStack * sampleStack = new SampleStack((double) 1 / KnobSampleRate.Value());
     /* current phase SDD */
-    Histogram<> * currSDD = new Histogram<>(DOLOG(Truncation) + 1);
-    /* totalSDD records the whole SDD */
-    Histogram<> * totalSDD = new Histogram<>(DOLOG(Truncation) + 1);
-
-    /* arguments to pass to Trace() */
-    Arguments * args = new Arguments;
-    args->first = static_cast<void *> (sampleStack);
-    args->second = static_cast<void *> (currSDD);
-    args->third = static_cast<void *> (totalSDD);
+    currRDD.setSize(DOLOG(Truncation) + 1);
+    phaseTable.setThreshold((double)1 / KnobRdvThreshold.Value());
 
     std::cout << "truncation distance " << Truncation << "\nout file " << KnobOutputFile.Value().c_str() \
-    << "\ninterval size " << IntervalSize << "\nsample rate " << (double) 1 / KnobSampleRate.Value() << std::endl;
+    << "\ninterval size " << IntervalSize << "\nPhase threshold " << (double) 1 / KnobRdvThreshold.Value() << std::endl;
 
     // add an instrumentation function
-    TRACE_AddInstrumentFunction(Trace, static_cast<VOID *> (args));
+    TRACE_AddInstrumentFunction(Trace, 0);
 
     /* when the instrucments finish, call this API */
-    PIN_AddFiniFunction(Fini, static_cast<VOID *> (args));
+    PIN_AddFiniFunction(Fini, 0);
 
     // Never returns
     PIN_StartProgram();
 
-    std::cout << "finally return\n";
-    
     return 0;
 }

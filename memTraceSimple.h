@@ -10,32 +10,29 @@
 #include <unordered_map>
 #include <assert.h>
 #include <stdlib.h> 
-#include <time.h> 
 #include <iomanip>
+#include <deque>
+#include <float.h>
 #include "pin.H"
 
-#define MAXSETNUM 4096
-
 static uint64_t Truncation = 0;
-static uint64_t Counter = 0;
+static uint64_t InterCount = 0;
 static uint64_t NumMemAccs = 0;
 static uint64_t NumIntervals = 0;
 static uint64_t IntervalSize = 0;
-static uint32_t SddDiff = 0;
 /* block size is 64 byte, so the block offset bits is lower 6 bits */
-static uint64_t blkBits = 6;
-std::ofstream fout;
-//std::vector<double> manhattanDist;
+static uint64_t BlkBits = 6;
 
 /* parse the command line arguments */
 KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool", "o", "SDD.txt", "specify output file name");
 KNOB<UINT64> KnobTruncDist(KNOB_MODE_WRITEONCE, "pintool", "m", "2048", "the truncation distance of SD");
 KNOB<UINT64> KnobIntervalSize(KNOB_MODE_WRITEONCE, "pintool", "i", "10000000", "the interval size");
 KNOB<UINT64> KnobSampleRate(KNOB_MODE_WRITEONCE, "pintool", "s", "10000", "the sample rate");
-KNOB<UINT32> KnobSddDiff(KNOB_MODE_WRITEONCE, "pintool", "d", "30", "the maximum difference value of two SDD vector");
+KNOB<UINT32> KnobRdvThreshold(KNOB_MODE_WRITEONCE, "pintool", "t", "4", "the maximum normalized manhattan distance of two RD vector");
 
 #define LOG2
-#define SAMPLE
+//#define SAMPLE
+#define PREDIC
 
 /* calculate log2(s) + 1 */
 template<class T>
@@ -56,13 +53,6 @@ inline T log2p1(T s)
 #else
 #define DOLOG(x) x
 #endif
-
-struct Arguments
-{
-	void * first;
-	void * second;
-	void * third;
-};
 
 /* for recording distribution into a Histogram, 
    Accur is the accuracy of transforming calculation */
@@ -90,7 +80,7 @@ public:
 
 	void normalize();
 
-	int manhattanDist(const Histogram<B> & rhs);
+	double manhattanDist(const Histogram<B> & rhs);
 
 	B & operator[](const int idx);
 
@@ -105,64 +95,78 @@ public:
 	void print(std::ofstream & file);
 };
 
-std::vector<Histogram<> *> phaseTable;
-
-/* stack distance staticstics with sampling */
-class SampleStack
+/* do reuse distance statistics */
+class ReuseDist
 {
-	typedef std::unordered_set<uint64_t> AddrSet;
-	/* each watchpoint has a set to keep the unique mem refs */
-	std::unordered_map<uint64_t, AddrSet> addrTable;
-	/* hibernating interval size */
-	int hibernInter;
-	/* sampling interval size */
-	int sampleInter;
-	/* the counter starts a sampling or hibernating interval */
-	uint64_t statusCounter;
-	/* the counter chooses the random sample to record SD */
-	uint64_t sampleCounter;
-	enum State {sampling, hibernating};
-	State state;
-	double sampleRate;
-	/* the residue of sampleRate and randNum, keep the fixed number of samples */
-	int residue;
+	std::map<uint64_t, long> addrMap;
+	long index;
 
 public:
-	SampleStack(int sSize, int hSize, double sRate);
+	ReuseDist() : index(0) {};
+	~ReuseDist() {};
 
-	SampleStack(double sRate);
+	void calReuseDist(uint64_t addr, Histogram<> & rdv);
+};
 
-	SampleStack();
+class PhaseTable
+{
+private:
+	class Entry 
+	{
+	private:
+		friend class PhaseTable;
+		Histogram<> phaseRDV;
+		uint32_t id;
+		uint32_t counter;
+	
+	public:
+		Entry(const Histogram<> & rdv);
+	
+		~Entry() {};
+	};
 
-	void setSampleRate(double s);
+	/* deque for LRU replacement policy */
+	std::deque<Entry *> pt;
+	double threshold;
 
-	void clear();
+public:
+	PhaseTable() {};
 
-	/* to generate a random number */
-	int genRandom();
+	~PhaseTable();
 
-	void calStackDist(uint64_t addr, Histogram<> * & hist);
+	void setThreshold(double t) { threshold = t; }
+
+	uint32_t find(const Histogram<> & rdv);
+
+	const int size() const { return pt.size(); }
 };
 
 VOID PIN_FAST_ANALYSIS_CALL
-RecordMemRefs(VOID * loca, VOID * a);
+RecordMemRefs(VOID * loca);
 
 // This function is called before every instruction is executed
 VOID PIN_FAST_ANALYSIS_CALL 
-doDump(VOID * a);
+doDump();
 
 /*
  * Insert code to write data to a thread-specific buffer for instructions
  * that access memory.
  */
-VOID Trace(TRACE trace, VOID * a);
+VOID Trace(TRACE trace, VOID *v);
 
 /* output the results, and free the poiters */
-VOID Fini(INT32 code, VOID * a);
+VOID Fini(INT32 code, VOID *v);
 
 /* ===================================================================== */
 /* Print Help Message                                                    */
 /* ===================================================================== */
 INT32 Usage();
+
+
+/* global variates */
+std::ofstream fout;
+Histogram<> currRDD;
+ReuseDist reuseDist;
+PhaseTable phaseTable;
 
 #endif
