@@ -238,11 +238,10 @@ RecordMemRefs(VOID * loca, VOID * a)
     /* cast void poiters */
     uint64_t addr = reinterpret_cast<uint64_t> (loca);
     Arguments * args = static_cast<Arguments *> (a);
-    //SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
+    SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
     Histogram<> * currSDD = static_cast<Histogram<> *> (args->second);
     
-	//sampleStack->calStackDist(addr >> blkBits, currSDD);
-    avlTreeStack.calStackDist(addr >> blkBits, *currSDD);
+	sampleStack->calStackDist(addr >> blkBits, currSDD);
     SetDistr.sample((addr >> blkBits) & (MAXSETNUM - 1));
 }
 
@@ -254,33 +253,14 @@ doDump(VOID * a)
         Counter = 0;
         ++NumIntervals;
         Arguments * args = static_cast<Arguments *> (a);
-        //SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
+        SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
         Histogram<> * currSDD = static_cast<Histogram<> *> (args->second);
         Histogram<> * totalSDD = static_cast<Histogram<> *> (args->third);
         /* sum the current SDD to total SDD */
         *totalSDD += *currSDD;
 
-#ifdef PREDIC
-        uint32_t distMin = INT_MAX;
-        //uint32_t idxMin;
-        /* search for a similar SDD of a phase */
-        for (uint32_t i = 0; i < phaseTable.size(); ++i) {
-            uint32_t dist = phaseTable[i]->manhattanDist(*currSDD);
-            if (dist < distMin) {
-                distMin = dist;
-                //idxMin = i;
-            }
-        }
-        if (distMin > SddDiff) {
-            Histogram<> * item = new Histogram<>(*currSDD);
-            phaseTable.push_back(item);
-        }
-        else 
-#endif
-
         //currSDD->print(fout);
-        //sampleStack->clear();
-        avlTreeStack.clear();
+        sampleStack->clear();
         currSDD->clear();
         std::cout << "==== " << NumIntervals << "th interval ====" << std::endl;
     }
@@ -371,12 +351,6 @@ VOID Fini(INT32 code, VOID * a)
     delete totalSDD;
     delete args;
 
-#ifdef PREDIC
-    for (unsigned int i = 0; i < phaseTable.size(); ++i)
-        delete phaseTable[i];
-
-    std::cout << "phase table size " << phaseTable.size() << std::endl;
-#endif
     std::cout << "Total memory accesses " << NumMemAccs << std::endl;
 }
 
@@ -401,7 +375,7 @@ int main(int argc, char *argv[])
 
     IntervalSize = KnobIntervalSize.Value();
     Truncation = KnobTruncDist.Value();
-    SddDiff = KnobSddDiff.Value();
+
     /* out put file open */
     fout.open(KnobOutputFile.Value().c_str(), std::ios::out | std::ios::binary);
     if (fout.fail()) {
