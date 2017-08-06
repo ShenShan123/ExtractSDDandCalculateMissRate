@@ -63,7 +63,6 @@ void Histogram<B>::normalize()
 template <class B>
 double Histogram<B>::manhattanDist(const Histogram<B> & rhs)
 {
-    std::cout << "_size " << _size << " rhs._size " << rhs._size << std::endl;
     assert(_size == rhs._size);
 
     B dist = 0;
@@ -151,7 +150,7 @@ void ReuseDist::calReuseDist(uint64_t addr, Histogram<> & rdv)
     value = index;
 }
 
-PhaseTable::Entry::Entry(const Histogram<> & rdv) : phaseRDV(rdv), id(-1), counter(0)
+PhaseTable::Entry::Entry(const Histogram<> & rdv, const uint32_t idx) : phaseRDV(rdv), id(-1), occur(0), reuse(0), reuseIdx(idx)
 {
     for (int i = 0; i < phaseRDV.size(); ++i)
         id ^= phaseRDV[i];
@@ -165,6 +164,7 @@ PhaseTable::~PhaseTable()
 
 uint32_t PhaseTable::find(const Histogram<> & rdv)
 {
+    ++index;
     double distMin = DBL_MAX;
     Entry * entryPtr = nullptr;
 
@@ -179,12 +179,14 @@ uint32_t PhaseTable::find(const Histogram<> & rdv)
     }
 
     if (distMin < threshold && entryPtr != nullptr) {
-        ++entryPtr->counter;
+        ++entryPtr->occur;
+        entryPtr->reuse = index - entryPtr->reuseIdx;
+        entryPtr->reuseIdx = index;
         std::cout << "found a similar phase: id " << entryPtr->id << std::endl;
         return entryPtr->id;
     }
     else {
-        Entry * newEntry = new Entry(rdv);
+        Entry * newEntry = new Entry(rdv, index);
         std::cout << "creat a new phase: id " << newEntry->id << std::endl;
         pt.push_back(newEntry);
         return 0;
@@ -208,7 +210,7 @@ doDump()
         InterCount = 0;
         ++NumIntervals;
 
-        uint32_t id = phaseTable.find(currRDD);
+        phaseTable.find(currRDD);
         currRDD.clear();
         std::cout << "==== " << NumIntervals << "th interval ====" << std::endl;
     }

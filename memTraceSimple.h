@@ -103,6 +103,7 @@ class ReuseDist
 
 public:
 	ReuseDist() : index(0) {};
+
 	~ReuseDist() {};
 
 	void calReuseDist(uint64_t addr, Histogram<> & rdv);
@@ -117,10 +118,12 @@ private:
 		friend class PhaseTable;
 		Histogram<> phaseRDV;
 		uint32_t id;
-		uint32_t counter;
+		uint32_t occur;
+		uint32_t reuse;
+		uint32_t reuseIdx;
 	
 	public:
-		Entry(const Histogram<> & rdv);
+		Entry(const Histogram<> & rdv, const uint32_t idx);
 	
 		~Entry() {};
 	};
@@ -128,9 +131,10 @@ private:
 	/* deque for LRU replacement policy */
 	std::deque<Entry *> pt;
 	double threshold;
+	uint32_t index;
 
 public:
-	PhaseTable() {};
+	PhaseTable() : index(0) {};
 
 	~PhaseTable();
 
