@@ -1,0 +1,295 @@
+input file is ../cactusADM/sample-10000-10M-trunc-2048.txt
+cache capacity 8192
+block size 64
+associativity 2
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0671186
+cache capacity 8192
+block size 64
+associativity 4
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0490422
+cache capacity 8192
+block size 64
+associativity 8
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0392828
+cache capacity 8192
+block size 64
+associativity 16
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0317877
+cache capacity 8192
+block size 64
+associativity 32
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0259076
+cache capacity 8192
+block size 64
+associativity 64
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0211523
+cache capacity 16384
+block size 64
+associativity 2
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0340796
+cache capacity 16384
+block size 64
+associativity 4
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0211543
+cache capacity 16384
+block size 64
+associativity 8
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0159997
+cache capacity 16384
+block size 64
+associativity 16
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0147188
+cache capacity 16384
+block size 64
+associativity 32
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0146199
+cache capacity 16384
+block size 64
+associativity 64
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0146193
+cache capacity 32768
+block size 64
+associativity 2
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0205069
+cache capacity 32768
+block size 64
+associativity 4
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0152868
+cache capacity 32768
+block size 64
+associativity 8
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0145828
+cache capacity 32768
+block size 64
+associativity 16
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.014555
+cache capacity 32768
+block size 64
+associativity 32
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0145509
+cache capacity 32768
+block size 64
+associativity 64
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0145479
+cache capacity 65536
+block size 64
+associativity 2
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0151935
+cache capacity 65536
+block size 64
+associativity 4
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0137254
+cache capacity 65536
+block size 64
+associativity 8
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0138704
+cache capacity 65536
+block size 64
+associativity 16
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0140656
+cache capacity 65536
+block size 64
+associativity 32
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0142065
+cache capacity 65536
+block size 64
+associativity 64
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.014308
+cache capacity 131072
+block size 64
+associativity 2
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0122393
+cache capacity 131072
+block size 64
+associativity 4
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0113827
+cache capacity 131072
+block size 64
+associativity 8
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0109757
+cache capacity 131072
+block size 64
+associativity 16
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0106169
+cache capacity 131072
+block size 64
+associativity 32
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0103314
+cache capacity 131072
+block size 64
+associativity 64
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0101224
+cache capacity 262144
+block size 64
+associativity 2
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0106208
+cache capacity 262144
+block size 64
+associativity 4
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0099981
+cache capacity 262144
+block size 64
+associativity 8
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0097284
+cache capacity 262144
+block size 64
+associativity 16
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.00963554
+cache capacity 262144
+block size 64
+associativity 32
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.00962394
+cache capacity 262144
+block size 64
+associativity 64
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.00962394
+cache capacity 524288
+block size 64
+associativity 2
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.00995532
+cache capacity 524288
+block size 64
+associativity 4
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.00969392
+cache capacity 524288
+block size 64
+associativity 8
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.00962394
+cache capacity 524288
+block size 64
+associativity 16
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.00962394
+cache capacity 524288
+block size 64
+associativity 32
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.00962394
+cache capacity 524288
+block size 64
+associativity 64
+truncation distance 2048
+input file ../cactusADM/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.00962394
