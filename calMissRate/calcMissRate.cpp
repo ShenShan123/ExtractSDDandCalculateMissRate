@@ -371,6 +371,7 @@ Reader::Reader(std::ifstream & fin, std::ofstream & fout, int cap, int blk, int 
 	fout << std::endl;
 
 	line = new int64_t[binSize];
+	/* read the SDD */
 	while (!fin.eof()) {
 		fin.read((char *)line, binSize * sizeof(int64_t));
 
@@ -389,7 +390,7 @@ Reader::Reader(std::ifstream & fin, std::ofstream & fout, int cap, int blk, int 
 	assert(succ);
 
 	double lruMissRate = histogram.calMissRate(cap, blk, assoc, false, setDistribution);
-	double lruTraMissRate = histogram.fullyToSetAssoc(cap, blk, assoc);
+	//double lruTraMissRate = histogram.fullyToSetAssoc(cap, blk, assoc);
 	//double plruMissRate = histogram.calMissRate(cap, blk, assoc, true);
 	//fout << "estimated_miss_rate " << std::setprecision(6) << lruMissRate << std::endl;
 	fout.close();
