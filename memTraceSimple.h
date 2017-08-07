@@ -31,7 +31,7 @@ KNOB<UINT64> KnobIntervalSize(KNOB_MODE_WRITEONCE, "pintool", "i", "10000000", "
 KNOB<UINT64> KnobSampleRate(KNOB_MODE_WRITEONCE, "pintool", "s", "10000", "the sample rate");
 
 #define LOG2
-#define SAMPLE
+//#define SAMPLE
 
 /* calculate log2(s) + 1 */
 template<class T>
@@ -137,7 +137,94 @@ public:
 	/* to generate a random number */
 	int genRandom();
 
-	void calStackDist(uint64_t addr, Histogram<> * & hist);
+	void calStackDist(uint64_t addr, Histogram<> & hist);
+};
+
+template <class Accur>
+class AvlNode
+{
+	//int holes;
+	friend class AvlTreeStack;
+	/* this is the num of holes of this tree,
+	including the holes of subtrees and the self interval. */
+	int holes;
+	/* this is the num of holes of entire right subtree. */
+	int rHoles;
+	std::pair<Accur, Accur> interval;
+	int height;
+	AvlNode<Accur> * left;
+	AvlNode<Accur> * right;
+
+public:
+	AvlNode(Accur & a);
+
+	AvlNode(AvlNode<Accur> & n);
+
+	~AvlNode();
+
+	static int getHeight(AvlNode<Accur> * & node)
+	{
+		return node ? node->height : -1;
+	}
+
+	void updateHeight();
+
+	void updateHoles();
+};
+
+/* for calculating stack distance distribution via AVL Tree, with no sampling*/
+class AvlTreeStack
+{
+	std::map <uint64_t, long> addrMap;
+	AvlNode<long> * root;
+	/* the index of refs in memory trace */
+	long index;
+	/* holes between current ref and last ref with same address */
+	int curHoles;
+
+public:
+	AvlTreeStack(long & v);
+
+	AvlTreeStack();
+
+	~AvlTreeStack() { destroy(root); }
+
+	void destroy(AvlNode<long> * & tree);
+
+	void clear();
+
+	void insert(AvlNode<long> * & tree, long & v);
+
+	void insert(long & a);
+
+	/*AvlNode<long> * & find(AvlNode<long> * & tree, int & v)
+	{
+	if (!tree)
+	return nullptr;
+
+	if (v < tree->holes)
+	find(tree->left, v);
+	else if (v > tree->holes)
+	find(tree->right, v);
+	else
+	return tree;
+	}*/
+
+	/* find the minimal interval node */
+	AvlNode<long> * & findMin(AvlNode<long> * & tree);
+	
+	/* find the maximal interval node */
+	AvlNode<long> * & findMax(AvlNode<long> * & tree);
+
+	void remove(AvlNode<long> * & tree, std::pair<long, long> & inter);
+
+	void rotate(AvlNode<long> * & tree);
+
+	void doubleRotate(AvlNode<long> * & tree);
+
+	void balance(AvlNode<long> * & tree);
+
+	void calStackDist(uint64_t addr, Histogram<> & hist);
 };
 
 VOID PIN_FAST_ANALYSIS_CALL

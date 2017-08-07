@@ -392,7 +392,6 @@ void Histogram<B, Accur>::print(std::ofstream & file)
 }
 
 Reader::Reader(std::ifstream & fin, std::ofstream & fout, int cap, int blk, int assoc) {
-	Histogram<int64_t> histogram;
 #ifdef LOG
 	int binSize = log2p1(MaxDist) + 1;
 #else
@@ -401,8 +400,6 @@ Reader::Reader(std::ifstream & fin, std::ofstream & fout, int cap, int blk, int 
 
 	int64_t * temp = new int64_t[binSize];
 	std::vector<int64_t> buffer(binSize);
-	std::string line;
-	std::stringstream lineStream;
 
 	while (!fin.eof()) {
 		fin.read((char *)temp, binSize * sizeof(int64_t));
@@ -412,21 +409,22 @@ Reader::Reader(std::ifstream & fin, std::ofstream & fout, int cap, int blk, int 
 		//	std::cout << temp[i] << " ";
 		//std::cout << "\n";
 		for (int i = 0; i < binSize; ++i)
-			buffer[i] += temp[i];
+			buffer[i] = temp[i];
+		
+		Histogram<int64_t> histogram;
+		/* save temp bins into histogram */
+		bool succ = histogram.mapToVector(buffer);
+
+		double lruMissRate = histogram.calMissRate(cap, blk, assoc, false);
+		fout << std::setprecision(6) << lruMissRate << std::endl;
 	}
 
-	//for (int i = 0; i < binSize; ++i)
-	//	std::cout << buffer[i] << " ";
 	delete[] temp;
-	/* save temp bins into histogram */
-	bool succ = histogram.mapToVector(buffer);
 
-	double lruMissRate = histogram.calMissRate(cap, blk, assoc, false);
-	double lruTraMissRate = histogram.fullyToSetAssoc(cap, blk, assoc);
+	//double lruTraMissRate = histogram.fullyToSetAssoc(cap, blk, assoc);
 	//double plruMissRate = histogram.calMissRate(cap, blk, assoc, true);
-	fout << std::setprecision(6) << lruMissRate << " " << lruTraMissRate << std::endl;
 	fout.close();
-	std::cout << std::setprecision(6) << lruMissRate << std::endl;
+	//std::cout << std::setprecision(6) << lruMissRate << std::endl;
 }
 
 int main(int argc, char *argv[])
@@ -451,7 +449,7 @@ int main(int argc, char *argv[])
 	int cap = std::stoi(capstr);
 	int blk = std::stoi(blkstr);
 	int assoc = std::stoi(assocstr);
-	//std::cout << "cache capacity " << cap << "\nblock size " << blk << "\nassociativity " << assoc \
+	std::cout << "cache capacity " << cap << "\nblock size " << blk << "\nassociativity " << assoc \
 	<< "\ntruncation distance " << MaxDist << "\ninput file " << pathIn << "\noutput file " << pathOut \
 	<< std::endl;
 

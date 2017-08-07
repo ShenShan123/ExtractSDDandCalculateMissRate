@@ -164,7 +164,7 @@ int SampleStack::genRandom()
 
 /* the argument hist uses reference is safe, because when calStackDist is return,
    totalSDD in RecordMemRefs is destroy */
-void SampleStack::calStackDist(uint64_t addr, Histogram<> * & hist)
+void SampleStack::calStackDist(uint64_t addr, Histogram<> & hist)
 {
 #ifdef HIBER
     /* start a new sampling interval */
@@ -184,7 +184,7 @@ void SampleStack::calStackDist(uint64_t addr, Histogram<> * & hist)
     record its stack distance and the sampling of x is finished */
     auto pos = addrTable.find(addr);
     if (pos != addrTable.end()) {
-		hist->sample(DOLOG(pos->second.size() - 1));
+		hist.sample(DOLOG(pos->second.size() - 1));
         addrTable.erase(addr);
     }
 
@@ -204,7 +204,7 @@ void SampleStack::calStackDist(uint64_t addr, Histogram<> * & hist)
         if (it->second.size() > Truncation) {
             auto eraseIt = it;
             ++it;
-            hist->sample(DOLOG(Truncation));
+            hist.sample(DOLOG(Truncation));
             addrTable.erase(eraseIt->first);
         }
         else
@@ -227,6 +227,285 @@ void SampleStack::calStackDist(uint64_t addr, Histogram<> * & hist)
         --sampleCounter;
 }
 
+
+template <class Accur>
+AvlNode<Accur>::AvlNode(Accur & a) : holes(1), rHoles(0), height(0), left(nullptr), right(nullptr)
+{
+    interval = std::make_pair(a, a);
+}
+
+template <class Accur>
+AvlNode<Accur>::AvlNode(AvlNode<Accur> & n) : holes(n.holes), rHoles(n.rHoles), height(n.height), left(n.left), right(n.right)
+{
+    interval = n.interval;
+}
+
+template <class Accur>
+AvlNode<Accur>::~AvlNode()
+{
+    delete left;
+    delete right;
+    left = nullptr;
+    right = nullptr;
+}
+
+template <class Accur>
+void AvlNode<Accur>::updateHeight()
+{
+    height = 1 + std::max(getHeight(left), getHeight(right));
+}
+
+template <class Accur>
+void AvlNode<Accur>::updateHoles()
+{
+    rHoles = right ? right->holes : 0;
+
+    holes =
+        (left ? left->holes : 0) + rHoles +
+        int(interval.second - interval.first) + 1;
+}
+
+AvlTreeStack::AvlTreeStack(long & v) : index(0), curHoles(0)
+{
+    root = new AvlNode<long>(v);
+}
+
+AvlTreeStack::AvlTreeStack() : root(nullptr), index(0), curHoles(0) {};
+
+void AvlTreeStack::destroy(AvlNode<long> * & tree)
+{
+    if (!tree)
+        return;
+
+    destroy(tree->left);
+    destroy(tree->right);
+    delete tree;
+    tree = nullptr;
+}
+
+void AvlTreeStack::clear()
+{
+    addrMap.clear();
+    destroy(root);
+    index = -1;
+    curHoles = -1;
+}
+
+void AvlTreeStack::insert(AvlNode<long> * & tree, long & v) {
+    if (!tree) {
+        tree = new AvlNode<long>(v);
+        return;
+    }
+
+    std::pair<long, long> & interval = tree->interval;
+    assert(!(v >= interval.first && v <= interval.second));
+
+    AvlNode<long> * & n1 = tree->left;
+    AvlNode<long> * & n2 = tree->right;
+
+    if (tree->holes < 0)
+        return;
+
+    if (v == interval.first - 1) {
+        interval.first = v;
+        if (n1) {
+            std::pair<long, long> & temp = findMax(n1)->interval;
+            if (v == temp.second + 1) {
+                interval.first = temp.first;
+                remove(n1, temp);
+            }
+        }
+        /* update the holes between current address */
+        curHoles += interval.second - v + tree->rHoles;
+    }
+
+    else if (v == interval.second + 1) {
+        interval.second = v;
+        if (n2) {
+            std::pair<long, long> & temp = findMin(n2)->interval;
+            if (v == temp.first - 1) {
+                interval.second = temp.second;
+                remove(n2, temp);
+            }
+        }
+        curHoles += tree->rHoles;
+    }
+
+    else if (v < interval.first - 1) {
+        insert(n1, v);
+        curHoles += tree->rHoles + interval.second - interval.first + 1;
+    }
+
+    else if (v > tree->interval.second + 1)
+        insert(n2, v);
+
+    balance(tree);
+}
+
+void AvlTreeStack::insert(long & a) 
+{   
+    /* everytime insert a address, get its total holes */
+    curHoles = 0; 
+    insert(root, a);
+}
+
+AvlNode<long> * & AvlTreeStack::findMin(AvlNode<long> * & tree)
+{
+    assert(tree);
+
+    if (!tree->left)
+        return tree;
+    else
+        return findMin(tree->left);
+}
+
+AvlNode<long> * & AvlTreeStack::findMax(AvlNode<long> * & tree)
+{
+    assert(tree);
+
+    if (!tree->right)
+        return tree;
+    else
+        return findMax(tree->right);
+}
+
+void AvlTreeStack::remove(AvlNode<long> * & tree, std::pair<long, long> & inter)
+{
+    if (!tree)
+        return;
+
+    if (inter.first > tree->interval.first)
+        remove(tree->right, inter);
+    else if (inter.first < tree->interval.first)
+        remove(tree->left, inter);
+
+    /* the tree has two children , 
+       replace its content with the min subnode and delete the min node */
+    else if (tree->left && tree->right) {
+        AvlNode<long> * & minNode = findMin(tree->right);
+        tree->interval = minNode->interval;
+        remove(tree->right, tree->interval);
+    }
+    else {
+        AvlNode<long> * old = tree;
+        if (!tree->left && !tree->right)
+            tree = nullptr;
+        else
+            tree = new AvlNode<long>(*(tree->left ? tree->left : tree->right));
+
+        delete old;
+    }
+
+    balance(tree);
+}
+
+void AvlTreeStack::rotate(AvlNode<long> * & tree)
+{
+    if (!tree)
+        return;
+
+    if (tree->holes < 0)
+        return;
+
+    AvlNode<long> * n1 = tree->left;
+    AvlNode<long> * n2 = tree->right;
+
+    if (n2 && AvlNode<long>::getHeight(n1) < AvlNode<long>::getHeight(n2)) {
+        tree->right = n2->left;
+        tree->updateHoles();
+        tree->updateHeight();
+
+        n2->left = tree;
+        n2->updateHoles();
+        n2->updateHeight();
+
+        tree = n2;
+    }
+    else if (n1 && AvlNode<long>::getHeight(n1) > AvlNode<long>::getHeight(n2)) {
+        tree->left = n1->right;
+        tree->updateHoles();
+        tree->updateHeight();
+
+        n1->right = tree;
+        n1->updateHoles();
+        n1->updateHeight();
+
+        tree = n1;
+    }
+}
+
+void AvlTreeStack::doubleRotate(AvlNode<long> * & tree)
+{
+    if (!tree)
+        return;
+
+    if (tree->holes < 0)
+        return;
+
+    AvlNode<long> * & n1 = tree->left;
+    AvlNode<long> * & n2 = tree->right;
+
+    if (AvlNode<long>::getHeight(n1) < AvlNode<long>::getHeight(n2))
+        rotate(n2);
+    else
+        rotate(n1);
+
+    rotate(tree);
+}
+
+void AvlTreeStack::balance(AvlNode<long> * & tree)
+{
+    if (!tree)
+        return;
+
+    AvlNode<long> * & n1 = tree->left;
+    AvlNode<long> * & n2 = tree->right;
+    int err = AvlNode<long>::getHeight(n1) - AvlNode<long>::getHeight(n2);
+    if (err > 1) {
+        if (AvlNode<long>::getHeight(n1->left) >= AvlNode<long>::getHeight(n1->right))
+            rotate(tree);
+        else
+            doubleRotate(tree);
+    }
+    else if (err < -1) {
+        if (AvlNode<long>::getHeight(n2->left) <= AvlNode<long>::getHeight(n2->right))
+            rotate(tree);
+        else
+            doubleRotate(tree);
+    }
+
+    tree->updateHeight();
+    tree->updateHoles();
+}
+
+void AvlTreeStack::calStackDist(uint64_t addr, Histogram<> & hist)
+{
+    long & value = addrMap[addr];
+
+    ++index;
+
+    /* value is 0 under cold miss */
+    if (!value) {
+        value = index;
+        //hist.sample(log2p1(Truncation));
+        hist.sample(Truncation);
+        return;
+    }
+
+    /* update b of last reference */
+    if (value < index) {
+        /* insert a hole */
+        insert(value);
+        uint32_t stackDist = index - value - curHoles - 1;
+        /* if the stack distance is large than Truncation, the reference is definitely missed. */
+        stackDist = stackDist >= Truncation ? Truncation : stackDist;
+        //hist.sample(log2p1(stackDist));
+        hist.sample(stackDist);
+    }
+
+    value = index;
+}
+
 VOID PIN_FAST_ANALYSIS_CALL
 RecordMemRefs(VOID * loca, VOID * a)
 {
@@ -235,11 +514,11 @@ RecordMemRefs(VOID * loca, VOID * a)
     /* cast void poiters */
     uint64_t addr = reinterpret_cast<uint64_t> (loca);
     Arguments * args = static_cast<Arguments *> (a);
-    SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
+    AvlTreeStack * avlTreeStack = static_cast<AvlTreeStack *> (args->first);
     Histogram<> * currSDD = static_cast<Histogram<> *> (args->second);
     
     uint64_t mask = 63;
-	sampleStack->calStackDist(addr & (~mask), currSDD);
+	avlTreeStack->calStackDist(addr & (~mask), *currSDD);
 }
 
 // This function is called before every instruction is executed
@@ -250,15 +529,15 @@ doDump(VOID * a)
         Counter = 0;
         ++NumIntervals;
         Arguments * args = static_cast<Arguments *> (a);
-        SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
+        AvlTreeStack * avlTreeStack = static_cast<AvlTreeStack *> (args->first);
         Histogram<> * currSDD = static_cast<Histogram<> *> (args->second);
         Histogram<> * totalSDD = static_cast<Histogram<> *> (args->third);
 
         /* sum the current SDD to total SDD */
         *totalSDD += *currSDD;
 
-        //currSDD->print(fout);
-        sampleStack->clear();
+        currSDD->print(fout);
+        avlTreeStack->clear();
         currSDD->clear();
         std::cout << "==== " << NumIntervals << "th interval ====" << std::endl;
     }
@@ -332,7 +611,7 @@ VOID Fini(INT32 code, VOID * a)
 {
     Arguments * args = static_cast<Arguments *> (a);
     /* cast the void poiters */
-    SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
+    AvlTreeStack * avlTreeStack = static_cast<AvlTreeStack *> (args->first);
     Histogram<> * currSDD = static_cast<Histogram<> *> (args->second);
     Histogram<> * totalSDD = static_cast<Histogram<> *> (args->third);
     /* sum the current SDD to total SDD */
@@ -343,7 +622,7 @@ VOID Fini(INT32 code, VOID * a)
 
     fout.close();
     /* free pointers */
-    delete sampleStack;
+    delete avlTreeStack;
     delete currSDD;
     delete totalSDD;
     delete args;
@@ -381,8 +660,8 @@ int main(int argc, char *argv[])
          return -1;
     }
 
-    /* sampleStack does sampling and calculate stack distance */
-    SampleStack * sampleStack = new SampleStack((double) 1 / KnobSampleRate.Value());
+    /* avlTreeStack does sampling and calculate stack distance */
+    AvlTreeStack * avlTreeStack = new AvlTreeStack();
     /* current phase SDD */
     Histogram<> * currSDD = new Histogram<>(DOLOG(Truncation) + 1);
     /* totalSDD records the whole SDD */
@@ -390,7 +669,7 @@ int main(int argc, char *argv[])
 
     /* arguments to pass to Trace() */
     Arguments * args = new Arguments;
-    args->first = static_cast<void *> (sampleStack);
+    args->first = static_cast<void *> (avlTreeStack);
     args->second = static_cast<void *> (currSDD);
     args->third = static_cast<void *> (totalSDD);
 
