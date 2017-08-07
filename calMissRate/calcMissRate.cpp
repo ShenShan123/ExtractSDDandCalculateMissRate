@@ -451,7 +451,7 @@ int main(int argc, char *argv[])
 	int cap = std::stoi(capstr);
 	int blk = std::stoi(blkstr);
 	int assoc = std::stoi(assocstr);
-	std::cout << "cache capacity " << cap << "\nblock size " << blk << "\nassociativity " << assoc \
+	//std::cout << "cache capacity " << cap << "\nblock size " << blk << "\nassociativity " << assoc \
 	<< "\ntruncation distance " << MaxDist << "\ninput file " << pathIn << "\noutput file " << pathOut \
 	<< std::endl;
 
