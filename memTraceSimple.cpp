@@ -487,8 +487,7 @@ void AvlTreeStack::calStackDist(uint64_t addr, Histogram<> & hist)
     /* value is 0 under cold miss */
     if (!value) {
         value = index;
-        //hist.sample(log2p1(Truncation));
-        hist.sample(Truncation);
+        hist.sample(DOLOG(Truncation));
         return;
     }
 
@@ -499,8 +498,7 @@ void AvlTreeStack::calStackDist(uint64_t addr, Histogram<> & hist)
         uint32_t stackDist = index - value - curHoles - 1;
         /* if the stack distance is large than Truncation, the reference is definitely missed. */
         stackDist = stackDist >= Truncation ? Truncation : stackDist;
-        //hist.sample(log2p1(stackDist));
-        hist.sample(stackDist);
+        hist.sample(DOLOG(stackDist));
     }
 
     value = index;
