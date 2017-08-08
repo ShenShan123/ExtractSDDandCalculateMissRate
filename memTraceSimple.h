@@ -14,15 +14,17 @@
 #include <iomanip>
 #include "pin.H"
 
+#define MAXSETNUM 4096
 
 static uint64_t Truncation = 0;
 static uint64_t Counter = 0;
 static uint64_t NumMemAccs = 0;
 static uint64_t NumIntervals = 0;
 static uint64_t IntervalSize = 0;
+/* block size is 64 byte, so the block offset bits is lower 6 bits */
+static uint64_t BlkBits = 6;
 
 std::ofstream fout;
-//std::vector<double> manhattanDist;
 
 /* parse the command line arguments */
 KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool", "o", "SDD.txt", "specify output file name");
@@ -32,6 +34,7 @@ KNOB<UINT64> KnobSampleRate(KNOB_MODE_WRITEONCE, "pintool", "s", "10000", "the s
 
 #define LOG2
 //#define SAMPLE
+#define SETDISTR
 
 /* calculate log2(s) + 1 */
 template<class T>
@@ -197,19 +200,6 @@ public:
 
 	void insert(long & a);
 
-	/*AvlNode<long> * & find(AvlNode<long> * & tree, int & v)
-	{
-	if (!tree)
-	return nullptr;
-
-	if (v < tree->holes)
-	find(tree->left, v);
-	else if (v > tree->holes)
-	find(tree->right, v);
-	else
-	return tree;
-	}*/
-
 	/* find the minimal interval node */
 	AvlNode<long> * & findMin(AvlNode<long> * & tree);
 	
@@ -247,5 +237,10 @@ VOID Fini(INT32 code, VOID * a);
 /* Print Help Message                                                    */
 /* ===================================================================== */
 INT32 Usage();
+
+/* global class instances */
+#ifdef SETDISTR
+Histogram<> SetDistr(MAXSETNUM);
+#endif
 
 #endif

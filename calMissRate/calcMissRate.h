@@ -16,18 +16,25 @@
 #include <boost/random.hpp>
 #include <boost/math/special_functions/gamma.hpp>
 
-#define LOG
+#define LOG2
+#define MAXSETNUM 4096
+
 static int64_t MaxDist = 0;
 
 static int64_t Trunc = 0;
+
+/* fast to calculate log2(x)+1 */
+#ifdef LOG2
+#define DOLOG(x) log2p1(x)
+#else
+#define DOLOG(x) x
+#endif
 
 /* for recording distribution into a Histogram, 
    Accur is the accuracy of transforming calculation */
 template <class B = int64_t, class Accur = double>
 class Histogram
 {
-	/* Histogram implemented by std::map */
-	std::map<long, B> binsMap;
 	/* Histogram implemented by std::vector */
 	//std::vector<B> binsVec;
 	std::vector<Accur> binsVec;
@@ -37,7 +44,7 @@ class Histogram
 	/* number of sampling */
 	B samples;
 	/* total number of hit references */
-	B hits;
+	Accur hits;
 	/* cache miss rate */
 	Accur missRate;
 
@@ -48,9 +55,6 @@ public:
 
 	void clear();
 
-	void sample(B x);
-
-	bool mapToVector();
 	/* complete the histogram with std::vector, to fast calculation. */
 	bool mapToVector(B * buffer, int bufSize);
 
@@ -64,11 +68,13 @@ public:
 
 	void print(std::ofstream & file);
 	/* calculate the miss rate for LRU set associative cache via cdf of binomial distribution */
+	//Accur calLruMissRate(const int & cap, const int & blk, const int & assoc, const std::vector<double> & setDistr);
 	Accur calLruMissRate(const int & cap, const int & blk, const int & assoc);
 	
 	Accur calPlruMissRate(const int & cap, const int & blk, const int & assoc);
 	/* calculate the miss rate for PLRU set associative cache, 
 	   first do set-association transforming, then calculate hit function */
+	//Accur calMissRate(const int & cap, const int & blk, const int & assoc, const bool plru, const std::vector<double> & setDistr);
 	Accur calMissRate(const int & cap, const int & blk, const int & assoc, const bool plru);
 };
 

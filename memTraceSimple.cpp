@@ -227,7 +227,6 @@ void SampleStack::calStackDist(uint64_t addr, Histogram<> & hist)
         --sampleCounter;
 }
 
-
 template <class Accur>
 AvlNode<Accur>::AvlNode(Accur & a) : holes(1), rHoles(0), height(0), left(nullptr), right(nullptr)
 {
@@ -514,9 +513,14 @@ RecordMemRefs(VOID * loca, VOID * a)
     Arguments * args = static_cast<Arguments *> (a);
     AvlTreeStack * avlTreeStack = static_cast<AvlTreeStack *> (args->first);
     Histogram<> * currSDD = static_cast<Histogram<> *> (args->second);
-    
-    uint64_t mask = 63;
-	avlTreeStack->calStackDist(addr & (~mask), *currSDD);
+
+    //SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
+	//sampleStack->calStackDist(addr >> BlkBits, currSDD);
+
+    avlTreeStack->calStackDist(addr >> BlkBits, *currSDD);
+#ifdef SETDISTR
+    SetDistr.sample((addr >> BlkBits) & (MAXSETNUM - 1));
+#endif
 }
 
 // This function is called before every instruction is executed
@@ -526,16 +530,24 @@ doDump(VOID * a)
     if (Counter >= IntervalSize) {
         Counter = 0;
         ++NumIntervals;
+
         Arguments * args = static_cast<Arguments *> (a);
         AvlTreeStack * avlTreeStack = static_cast<AvlTreeStack *> (args->first);
+        //SampleStack * sampleStack = static_cast<SampleStack *> (args->first);
         Histogram<> * currSDD = static_cast<Histogram<> *> (args->second);
         Histogram<> * totalSDD = static_cast<Histogram<> *> (args->third);
 
         /* sum the current SDD to total SDD */
         *totalSDD += *currSDD;
 
+#ifdef SETDISTR
+        SetDistr.print(fout);
+        SetDistr.clear();
+#endif
         currSDD->print(fout);
+
         avlTreeStack->clear();
+        //sampleStack->clear();
         currSDD->clear();
         std::cout << "==== " << NumIntervals << "th interval ====" << std::endl;
     }
@@ -615,6 +627,7 @@ VOID Fini(INT32 code, VOID * a)
     /* sum the current SDD to total SDD */
     *totalSDD += *currSDD;
     //currSDD->print(fout);
+    //SetDistr.print(fout);
     totalSDD->print(fout);
     ++NumIntervals;
 
@@ -682,8 +695,6 @@ int main(int argc, char *argv[])
 
     // Never returns
     PIN_StartProgram();
-
-    std::cout << "finally return\n";
     
     return 0;
 }
