@@ -28,7 +28,7 @@ KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool", "o", "SDD.txt", "spe
 KNOB<UINT64> KnobTruncDist(KNOB_MODE_WRITEONCE, "pintool", "m", "2048", "the truncation distance of SD");
 KNOB<UINT64> KnobIntervalSize(KNOB_MODE_WRITEONCE, "pintool", "i", "10000000", "the interval size");
 KNOB<UINT64> KnobSampleRate(KNOB_MODE_WRITEONCE, "pintool", "s", "10000", "the sample rate");
-KNOB<UINT32> KnobRdvThreshold(KNOB_MODE_WRITEONCE, "pintool", "t", "4", "the maximum normalized manhattan distance of two RD vector");
+KNOB<UINT32> KnobRdvThreshold(KNOB_MODE_WRITEONCE, "pintool", "t", "20", "the maximum normalized manhattan distance of two RD vector");
 
 #define LOG2
 //#define SAMPLE
@@ -146,11 +146,7 @@ public:
 };
 
 VOID PIN_FAST_ANALYSIS_CALL
-RecordMemRefs(VOID * loca);
-
-// This function is called before every instruction is executed
-VOID PIN_FAST_ANALYSIS_CALL 
-doDump();
+RecordMemRefs(UINT32 memCode, ADDRINT EA, ADDRINT EA2 = 0);
 
 /*
  * Insert code to write data to a thread-specific buffer for instructions
@@ -171,6 +167,6 @@ INT32 Usage();
 std::ofstream fout;
 Histogram<> currRDD;
 ReuseDist reuseDist;
-PhaseTable phaseTable;
+//PhaseTable phaseTable;
 
 #endif

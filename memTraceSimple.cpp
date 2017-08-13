@@ -194,23 +194,40 @@ uint32_t PhaseTable::find(const Histogram<> & rdv)
 }
 
 VOID PIN_FAST_ANALYSIS_CALL
-RecordMemRefs(VOID * loca)
+RecordMemRefs(UINT32 memCode, ADDRINT EA, ADDRINT EA2)
 {
-    ++NumMemAccs;
-    ++InterCount;
-    uint64_t addr = reinterpret_cast<uint64_t> (loca);
-    reuseDist.calReuseDist(addr >> BlkBits, currRDD);
-}
+    switch(memCode) {
+        case 4:
+            ++NumMemAccs;
+            ++InterCount;
+            reuseDist.calReuseDist(reinterpret_cast<uint64_t> (EA) >> BlkBits, currRDD);
+            break;
+        case 6:
+            NumMemAccs += 2;
+            InterCount += 2;
+            reuseDist.calReuseDist(reinterpret_cast<uint64_t> (EA) >> BlkBits, currRDD);
+            reuseDist.calReuseDist(reinterpret_cast<uint64_t> (EA2) >> BlkBits, currRDD);
+            break;
+        case 1:
+            ++NumMemAccs;
+            ++InterCount;
+            reuseDist.calReuseDist(reinterpret_cast<uint64_t> (EA) >> BlkBits, currRDD);
+            break;
+        case 5:
+            NumMemAccs += 2;
+            InterCount += 2;
+            reuseDist.calReuseDist(reinterpret_cast<uint64_t> (EA) >> BlkBits, currRDD);
+            reuseDist.calReuseDist(reinterpret_cast<uint64_t> (EA2) >> BlkBits, currRDD);
+            break;
+    }
 
-// This function is called before every instruction is executed
-VOID PIN_FAST_ANALYSIS_CALL
-doDump()
-{
     if (InterCount >= IntervalSize) {
-        InterCount = 0;
+        /* compensate the residual of insts */
+        InterCount -= IntervalSize;
         ++NumIntervals;
 
         phaseTable.find(currRDD);
+        currRDD.print(fout);
         currRDD.clear();
         std::cout << "==== " << NumIntervals << "th interval ====" << std::endl;
     }
@@ -231,47 +248,46 @@ VOID Trace(TRACE trace, VOID * v)
 {   
     // Insert a call to record the effective address.
     for(BBL bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl=BBL_Next(bbl))
-    {
-        for(INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins=INS_Next(ins))
-        {
-            //if(INS_IsMemoryRead(ins) && INS_IsStandardMemop(ins))
-            if(INS_IsMemoryRead(ins)) // include vector load/store, by shen
-            {
-                INS_InsertCall(
-                ins, IPOINT_BEFORE, 
-                (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL, 
-                IARG_MEMORYREAD_EA,
-                IARG_END);
-            }
-
-            //if (INS_HasMemoryRead2(ins) && INS_IsStandardMemop(ins))
-            if(INS_HasMemoryRead2(ins)) // include vector load/store, by shen
-            {   
-                INS_InsertCall(
-                ins, IPOINT_BEFORE, 
-                (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL, 
-                IARG_MEMORYREAD2_EA,
-                IARG_END);
-            }
-
-            //if(INS_IsMemoryWrite(ins) && INS_IsStandardMemop(ins))
-            if(INS_IsMemoryWrite(ins)) // include vector load/store, by shen
-            {
-                INS_InsertCall(
-                ins, IPOINT_BEFORE, 
-                (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL, 
-                IARG_MEMORYWRITE_EA,
-                IARG_END);
+        for(INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins=INS_Next(ins)) {
+            uint8_t memCode = (INS_IsMemoryRead(ins) << 2) | (INS_HasMemoryRead2(ins) << 1) | INS_IsMemoryWrite(ins);
+            if (!memCode) continue;
+            /* if the inst is a memory inst, then call the analysis routine */
+            switch (memCode) {
+                case 4:
+                    INS_InsertCall(
+                    ins, IPOINT_BEFORE,
+                    (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL,
+                    IARG_UINT32, memCode,
+                    IARG_MEMORYREAD_EA,
+                    IARG_END); break;
+                case 6:
+                    INS_InsertCall(
+                    ins, IPOINT_BEFORE,
+                    (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL,
+                    IARG_UINT32, memCode,
+                    IARG_MEMORYREAD_EA,
+                    IARG_MEMORYREAD2_EA,
+                    IARG_END); break;
+                case 1:
+                    INS_InsertCall(
+                    ins, IPOINT_BEFORE,
+                    (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL,
+                    IARG_UINT32, memCode,
+                    IARG_MEMORYWRITE_EA,
+                    IARG_END); break; 
+                case 5:
+                    INS_InsertCall(
+                    ins, IPOINT_BEFORE,
+                    (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL,
+                    IARG_UINT32, memCode,
+                    IARG_MEMORYREAD_EA,
+                    IARG_MEMORYWRITE_EA,
+                    IARG_END); break;    
+                default:
+                    std::cerr << "memop code: " << memCode << "\nwrong memory options!!\nexit!!\n";
+                    exit(-1);                            
             }
         }
-
-        // Insert a call to docount for every bbl, passing the number of instructions.
-        // IPOINT_ANYWHERE allows Pin to schedule the call anywhere in the bbl to obtain best performance.
-        // Use a fast linkage for the call.
-        BBL_InsertCall(bbl, IPOINT_ANYWHERE, 
-        (AFUNPTR)doDump, IARG_FAST_ANALYSIS_CALL,
-        IARG_END);
-    }
 }
 
 /* output the results, and free the poiters */
@@ -284,7 +300,7 @@ VOID Fini(INT32 code, VOID *v)
 
     fout.close();
 
-    std::cout << "phase table size " << phaseTable.size() << std::endl;
+    //std::cout << "phase table size " << phaseTable.size() << std::endl;
     std::cout << "Total memory accesses " << NumMemAccs << std::endl;
 }
 
@@ -317,8 +333,9 @@ int main(int argc, char *argv[])
          return -1;
     }
 
-    /* current phase SDD */
+    /* current phase RDD */
     currRDD.setSize(DOLOG(Truncation) + 1);
+    /* default threshold = 0.05 */
     phaseTable.setThreshold((double)1 / KnobRdvThreshold.Value());
 
     std::cout << "truncation distance " << Truncation << "\nout file " << KnobOutputFile.Value().c_str() \
