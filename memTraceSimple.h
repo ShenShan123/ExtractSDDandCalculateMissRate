@@ -59,6 +59,7 @@ inline T log2p1(T s)
 template <class B = int64_t>
 class Histogram
 {
+protected:
 	B * bins;
 	B samples;
 	int _size;
@@ -80,9 +81,7 @@ public:
 
 	void normalize();
 
-	double manhattanDist(const Histogram<B> & rhs);
-
-	B & operator[](const int idx);
+	B & operator[] (const int idx) const;
 
 	Histogram<B> & operator=(const Histogram<B> & rhs);
 
@@ -112,24 +111,24 @@ public:
 class PhaseTable
 {
 private:
-	class Entry 
+	template<class B>
+	class Entry : public Histogram<B>
 	{
 	private:
 		friend class PhaseTable;
-		Histogram<> phaseRDV;
 		uint32_t id;
 		uint32_t occur;
-		uint32_t reuse;
-		uint32_t reuseIdx;
 	
 	public:
-		Entry(const Histogram<> & rdv, const uint32_t idx);
+		Entry(const Histogram<B> & rdv, const uint32_t _id);
 	
 		~Entry() {};
+
+		double manhattanDist(const Histogram<B> & rhs);
 	};
 
 	/* deque for LRU replacement policy */
-	std::deque<Entry *> pt;
+	std::deque<Entry<int64_t> *> pt;
 	double threshold;
 	uint32_t index;
 
@@ -146,7 +145,7 @@ public:
 };
 
 VOID PIN_FAST_ANALYSIS_CALL
-RecordMemRefs(UINT32 memCode, ADDRINT EA, ADDRINT EA2 = 0);
+RecordMemRefs(ADDRINT ea);
 
 /*
  * Insert code to write data to a thread-specific buffer for instructions
@@ -167,6 +166,6 @@ INT32 Usage();
 std::ofstream fout;
 Histogram<> currRDD;
 ReuseDist reuseDist;
-//PhaseTable phaseTable;
+PhaseTable phaseTable;
 
 #endif

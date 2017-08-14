@@ -61,20 +61,7 @@ void Histogram<B>::normalize()
 }
 
 template <class B>
-double Histogram<B>::manhattanDist(const Histogram<B> & rhs)
-{
-    assert(_size == rhs._size);
-
-    B dist = 0;
-    for (uint32_t i = 0; i < _size; ++i)
-        dist += std::abs(bins[i] - rhs.bins[i]);
-
-    return (double)dist / samples;
-}
-
-
-template <class B>
-B & Histogram<B>::operator[](const int idx)
+B & Histogram<B>::operator[](const int idx) const
 {
     assert(idx >= 0 && idx < _size);
     return bins[idx];
@@ -95,7 +82,7 @@ Histogram<B> & Histogram<B>::operator=(const Histogram<B> & rhs)
 template <class B>
 Histogram<B> & Histogram<B>::operator+=(const Histogram<B> & rhs)
 {
-    assert(_size == rhs.size());
+    assert(_size == rhs._size);
 
     for (int i = 0; i < _size; ++i)
         bins[i] += rhs.bins[i];
@@ -150,10 +137,27 @@ void ReuseDist::calReuseDist(uint64_t addr, Histogram<> & rdv)
     value = index;
 }
 
-PhaseTable::Entry::Entry(const Histogram<> & rdv, const uint32_t idx) : phaseRDV(rdv), id(-1), occur(0), reuse(0), reuseIdx(idx)
+template<class B>
+PhaseTable::Entry<B>::Entry(const Histogram<B> & rdv, const uint32_t _id) : Histogram<B>(rdv), id(_id), occur(1)
 {
-    for (int i = 0; i < phaseRDV.size(); ++i)
-        id ^= phaseRDV[i];
+    //for (int i = 0; i < this->_size; ++i)
+      //  id ^= this->bins[i];
+}
+
+template<class B>
+double PhaseTable::Entry<B>::manhattanDist(const Histogram<B> & rhs)
+{
+    assert(this->_size == rhs.size());
+
+    B dist = 0;
+    for (uint32_t i = 0; i < this->_size; ++i)
+        /* abstract the sum of the similar rdvs in the entry 
+           with the rhs(current phase rdv), this is 
+           an approximation to average manhattan distance
+           between to clusters. */
+        dist += std::abs(this->bins[i] - occur * rhs[i]);
+
+    return (double)dist / this->samples;
 }
 
 PhaseTable::~PhaseTable() 
@@ -166,11 +170,11 @@ uint32_t PhaseTable::find(const Histogram<> & rdv)
 {
     ++index;
     double distMin = DBL_MAX;
-    Entry * entryPtr = nullptr;
+    Entry<int64_t> * entryPtr = nullptr;
 
     /* search for a similar RDV of a phase */
     for (auto it = pt.begin(); it != pt.end(); ++it) {
-        double dist = (*it)->phaseRDV.manhattanDist(rdv);
+        double dist = (*it)->manhattanDist(rdv);
 
         if (dist < distMin) {
             distMin = dist;
@@ -178,55 +182,39 @@ uint32_t PhaseTable::find(const Histogram<> & rdv)
         }
     }
 
+    /* if found a similar entry in phase table, 
+       add the rdv to it which is similar with,
+       and incread the occurence counter. */
     if (distMin < threshold && entryPtr != nullptr) {
         ++entryPtr->occur;
-        entryPtr->reuse = index - entryPtr->reuseIdx;
-        entryPtr->reuseIdx = index;
+        *entryPtr += rdv;
         std::cout << "found a similar phase: id " << entryPtr->id << std::endl;
         return entryPtr->id;
     }
     else {
-        Entry * newEntry = new Entry(rdv, index);
-        std::cout << "creat a new phase: id " << newEntry->id << std::endl;
-        pt.push_back(newEntry);
-        return 0;
+        entryPtr = new Entry<int64_t>(rdv, pt.size() + 1);
+        std::cout << "creat a new phase: id " << entryPtr->id << std::endl;
+        pt.push_back(entryPtr);
+        return entryPtr->id;
     }
 }
 
 VOID PIN_FAST_ANALYSIS_CALL
-RecordMemRefs(UINT32 memCode, ADDRINT EA, ADDRINT EA2)
+RecordMemRefs(ADDRINT ea)
 {
-    switch(memCode) {
-        case 4:
-            ++NumMemAccs;
-            ++InterCount;
-            reuseDist.calReuseDist(reinterpret_cast<uint64_t> (EA) >> BlkBits, currRDD);
-            break;
-        case 6:
-            NumMemAccs += 2;
-            InterCount += 2;
-            reuseDist.calReuseDist(reinterpret_cast<uint64_t> (EA) >> BlkBits, currRDD);
-            reuseDist.calReuseDist(reinterpret_cast<uint64_t> (EA2) >> BlkBits, currRDD);
-            break;
-        case 1:
-            ++NumMemAccs;
-            ++InterCount;
-            reuseDist.calReuseDist(reinterpret_cast<uint64_t> (EA) >> BlkBits, currRDD);
-            break;
-        case 5:
-            NumMemAccs += 2;
-            InterCount += 2;
-            reuseDist.calReuseDist(reinterpret_cast<uint64_t> (EA) >> BlkBits, currRDD);
-            reuseDist.calReuseDist(reinterpret_cast<uint64_t> (EA2) >> BlkBits, currRDD);
-            break;
-    }
+    ++NumMemAccs;
+    ++InterCount;
+
+    reuseDist.calReuseDist(reinterpret_cast<uint64_t> (ea) >> BlkBits, currRDD);
 
     if (InterCount >= IntervalSize) {
         /* compensate the residual of insts */
         InterCount -= IntervalSize;
         ++NumIntervals;
 
-        phaseTable.find(currRDD);
+        //uint32_t id = phaseTable.find(currRDD);
+        //fout << id << "\n";
+
         currRDD.print(fout);
         currRDD.clear();
         std::cout << "==== " << NumIntervals << "th interval ====" << std::endl;
@@ -234,8 +222,8 @@ RecordMemRefs(UINT32 memCode, ADDRINT EA, ADDRINT EA2)
 
     /* if we got a maximum memory references, just exit this program */
     //if (NumMemAccs >= 50000000000) {
-        //Fini(0, a);
-        //exit (0);
+        //Fini(0);
+        //exit(0);
     //}
 }
 
@@ -249,44 +237,25 @@ VOID Trace(TRACE trace, VOID * v)
     // Insert a call to record the effective address.
     for(BBL bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl=BBL_Next(bbl))
         for(INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins=INS_Next(ins)) {
-            uint8_t memCode = (INS_IsMemoryRead(ins) << 2) | (INS_HasMemoryRead2(ins) << 1) | INS_IsMemoryWrite(ins);
-            if (!memCode) continue;
             /* if the inst is a memory inst, then call the analysis routine */
-            switch (memCode) {
-                case 4:
-                    INS_InsertCall(
-                    ins, IPOINT_BEFORE,
-                    (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL,
-                    IARG_UINT32, memCode,
-                    IARG_MEMORYREAD_EA,
-                    IARG_END); break;
-                case 6:
-                    INS_InsertCall(
-                    ins, IPOINT_BEFORE,
-                    (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL,
-                    IARG_UINT32, memCode,
-                    IARG_MEMORYREAD_EA,
-                    IARG_MEMORYREAD2_EA,
-                    IARG_END); break;
-                case 1:
-                    INS_InsertCall(
-                    ins, IPOINT_BEFORE,
-                    (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL,
-                    IARG_UINT32, memCode,
-                    IARG_MEMORYWRITE_EA,
-                    IARG_END); break; 
-                case 5:
-                    INS_InsertCall(
-                    ins, IPOINT_BEFORE,
-                    (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL,
-                    IARG_UINT32, memCode,
-                    IARG_MEMORYREAD_EA,
-                    IARG_MEMORYWRITE_EA,
-                    IARG_END); break;    
-                default:
-                    std::cerr << "memop code: " << memCode << "\nwrong memory options!!\nexit!!\n";
-                    exit(-1);                            
-            }
+            if (INS_IsMemoryRead(ins))
+                INS_InsertCall(
+                ins, IPOINT_BEFORE,
+                (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL,
+                IARG_MEMORYREAD_EA,
+                IARG_END);
+            if (INS_HasMemoryRead2(ins))
+                INS_InsertCall(
+                ins, IPOINT_BEFORE,
+                (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL,
+                IARG_MEMORYREAD2_EA,
+                IARG_END);
+            if (INS_IsMemoryWrite(ins))
+                INS_InsertCall(
+                ins, IPOINT_BEFORE,
+                (AFUNPTR)RecordMemRefs, IARG_FAST_ANALYSIS_CALL,
+                IARG_MEMORYWRITE_EA,
+                IARG_END);
         }
 }
 
@@ -300,7 +269,7 @@ VOID Fini(INT32 code, VOID *v)
 
     fout.close();
 
-    //std::cout << "phase table size " << phaseTable.size() << std::endl;
+    std::cout << "phase table size " << phaseTable.size() << std::endl;
     std::cout << "Total memory accesses " << NumMemAccs << std::endl;
 }
 
