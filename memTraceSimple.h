@@ -12,6 +12,7 @@
 #include <stdlib.h> 
 #include <iomanip>
 #include <deque>
+#include <list>
 #include <float.h>
 #include "pin.H"
 
@@ -24,11 +25,12 @@ static uint64_t IntervalSize = 0;
 static uint64_t BlkBits = 6;
 
 /* parse the command line arguments */
-KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool", "o", "SDD.txt", "specify output file name");
-KNOB<UINT64> KnobTruncDist(KNOB_MODE_WRITEONCE, "pintool", "m", "2048", "the truncation distance of SD");
+KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool", "o", "RDV.txt", "specify output file name");
+KNOB<UINT64> KnobTruncDist(KNOB_MODE_WRITEONCE, "pintool", "m", "16384", "the truncation distance of SD");
 KNOB<UINT64> KnobIntervalSize(KNOB_MODE_WRITEONCE, "pintool", "i", "10000000", "the interval size");
-KNOB<UINT64> KnobSampleRate(KNOB_MODE_WRITEONCE, "pintool", "s", "10000", "the sample rate");
-KNOB<UINT32> KnobRdvThreshold(KNOB_MODE_WRITEONCE, "pintool", "t", "20", "the maximum normalized manhattan distance of two RD vector");
+//KNOB<UINT64> KnobSampleRate(KNOB_MODE_WRITEONCE, "pintool", "s", "10000", "the sample rate");
+KNOB<UINT32> KnobRdvThreshold(KNOB_MODE_WRITEONCE, "pintool", "t", "5", "the maximum normalized manhattan distance of two RD vector");
+KNOB<UINT32> KnobPhaseTableSize(KNOB_MODE_WRITEONCE, "pintool", "p", "10000", "phase table size");
 
 #define LOG2
 //#define SAMPLE
@@ -127,17 +129,21 @@ private:
 		double manhattanDist(const Histogram<B> & rhs);
 	};
 
-	/* deque for LRU replacement policy */
-	std::deque<Entry<int64_t> *> pt;
+	/* list for LRU replacement policy */
+	std::list<Entry<int64_t> *> pt;
 	double threshold;
-	uint32_t index;
+	uint32_t newId;
+	uint32_t ptSize;
 
 public:
-	PhaseTable() : index(0) {};
+	PhaseTable() : threshold(0.0), newId(0), ptSize(0) {};
 
 	~PhaseTable();
 
-	void setThreshold(double t) { threshold = t; }
+	void init(double t, uint32_t s);
+
+	/* do LRU replacement */
+	void lruRepl(Entry<int64_t> * ent, std::list<Entry<int64_t> *>::iterator & p);
 
 	uint32_t find(const Histogram<> & rdv);
 

@@ -139,10 +139,7 @@ void ReuseDist::calReuseDist(uint64_t addr, Histogram<> & rdv)
 
 template<class B>
 PhaseTable::Entry<B>::Entry(const Histogram<B> & rdv, const uint32_t _id) : Histogram<B>(rdv), id(_id), occur(1)
-{
-    //for (int i = 0; i < this->_size; ++i)
-      //  id ^= this->bins[i];
-}
+{}
 
 template<class B>
 double PhaseTable::Entry<B>::manhattanDist(const Histogram<B> & rhs)
@@ -166,11 +163,36 @@ PhaseTable::~PhaseTable()
         delete *it;
 }
 
+void PhaseTable::init(double t, uint32_t s)
+{
+    threshold = t;
+    ptSize = s;
+}
+
+void PhaseTable::lruRepl(Entry<int64_t> * ent, std::list<Entry<int64_t> *>::iterator & p)
+{
+    /* move the most recently access entry to the head of list */
+    pt.push_front(ent);
+    /* erase the old position */
+    if (p != pt.end())
+        pt.erase(p);
+    /* this is a new entry */
+    /* if the phase table is full, delete the last entry */
+    else if (pt.size() > ptSize) {
+        std::cout << "full phase table!! pop " << (*(--p))->id << std::endl;
+        /* free the pointer, Entry<> *, and pop the last element */
+        delete *p;
+        pt.pop_back();
+    }
+
+    assert(pt.size() <= ptSize);
+}
+
 uint32_t PhaseTable::find(const Histogram<> & rdv)
 {
-    ++index;
     double distMin = DBL_MAX;
     Entry<int64_t> * entryPtr = nullptr;
+    auto pos = pt.end();
 
     /* search for a similar RDV of a phase */
     for (auto it = pt.begin(); it != pt.end(); ++it) {
@@ -179,22 +201,30 @@ uint32_t PhaseTable::find(const Histogram<> & rdv)
         if (dist < distMin) {
             distMin = dist;
             entryPtr = *it;
+            /* record the postion of the nearest vector */
+            pos = it;
         }
     }
 
     /* if found a similar entry in phase table, 
-       add the rdv to it which is similar with,
+       add the rdv to the simial cluster,
        and incread the occurence counter. */
     if (distMin < threshold && entryPtr != nullptr) {
         ++entryPtr->occur;
         *entryPtr += rdv;
         std::cout << "found a similar phase: id " << entryPtr->id << std::endl;
+        
+        lruRepl(entryPtr, pos);
         return entryPtr->id;
     }
+    /* creat a new phase entry and do LRU replacement policy */
     else {
-        entryPtr = new Entry<int64_t>(rdv, pt.size() + 1);
+        ++newId;
+        pos = pt.end();
+        entryPtr = new Entry<int64_t>(rdv, newId);
         std::cout << "creat a new phase: id " << entryPtr->id << std::endl;
-        pt.push_back(entryPtr);
+        
+        lruRepl(entryPtr, pos);
         return entryPtr->id;
     }
 }
@@ -212,10 +242,11 @@ RecordMemRefs(ADDRINT ea)
         InterCount -= IntervalSize;
         ++NumIntervals;
 
-        //uint32_t id = phaseTable.find(currRDD);
-        //fout << id << "\n";
+        uint32_t id = phaseTable.find(currRDD);
+        /* print the current phase index */
+        fout << id << "\n";
 
-        currRDD.print(fout);
+        //currRDD.print(fout);
         currRDD.clear();
         std::cout << "==== " << NumIntervals << "th interval ====" << std::endl;
     }
@@ -304,11 +335,12 @@ int main(int argc, char *argv[])
 
     /* current phase RDD */
     currRDD.setSize(DOLOG(Truncation) + 1);
-    /* default threshold = 0.05 */
-    phaseTable.setThreshold((double)1 / KnobRdvThreshold.Value());
+    /* init the phase table with  threshold = 5%  and table size */
+    phaseTable.init((double)KnobRdvThreshold.Value() / 100, KnobPhaseTableSize.Value());
 
-    std::cout << "truncation distance " << Truncation << "\nout file " << KnobOutputFile.Value().c_str() \
-    << "\ninterval size " << IntervalSize << "\nPhase threshold " << (double) 1 / KnobRdvThreshold.Value() << std::endl;
+    std::cout << "truncation distance " << Truncation << "\nRDV dimension " << currRDD.size() << "\nout file " << KnobOutputFile.Value().c_str() \
+    << "\ninterval size " << IntervalSize << "\nPhase threshold " << (double)KnobRdvThreshold.Value() / 100 \
+    << "\nphase table size " << KnobPhaseTableSize.Value() << std::endl;
 
     // add an instrumentation function
     TRACE_AddInstrumentFunction(Trace, 0);

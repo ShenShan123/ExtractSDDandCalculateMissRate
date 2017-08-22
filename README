@@ -4,16 +4,20 @@ This is a tool to get SDD based on Intel Pin-2.14, linux version.
 put this directory in pin-2.14-71313-gcc.4.4.7-linux\source\tools,
 and use it as a pin tool.
 The program for calculating cache miss rate is in subdirectory ./calMissRate
-the subdirectory ./gcc ./bzip2 is a SPEC2006 benchmark.
+the subdirectory ./gcc ./bzip2 et. al. is a SPEC2006 benchmark.
+also can extract a BBV, the libary in obj-intel64/bbvTrace.so/.o
 
 
 This program generates the SDD input for calMissRate program.
 ===================================================================
 the arguments:
 -o output file path, default SDD.txt
--m truncation distance, default 2K
+-m truncation distance, default 16K
 -i interval size, default 10M
--s sample rate, default 10000, i.e. 1e-4
+/*-s sample rate, default 10000, i.e. 1e-4*/
+-t the threshold, a maximum normalized manhattan distance which considers  two RD vector is different, default is 5, i.e. 5%
+-p phase table size, default
+
 
 For example:
 $ cd gcc-trace
@@ -22,3 +26,13 @@ $ ../../../../pin -t ../obj-intel64/memTraceSimple.so -m 262144 -o trunc-262144.
 how to build?
 Just default make
 $ make obj-intel64/memTraceSimple.so
+
+run bbvTrace.so
+==================================================================
+the arguments:
+-o output file, default BBV.txt
+-i interval size, this is memory reference interval, default 10M
+-a accumulator table size, default 16 entries, max is 32 entries
+
+run like this:
+$ ./../../../../pin.sh -t  ../obj-intel64/bbvTrace.so -o perlbench-bbv-16.txt -- ./perlbench_base.gcc41-amd64bit -I./lib checkspam.pl 2500 5 25 11 150 1 1 1 1 
