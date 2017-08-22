@@ -2,52 +2,17 @@
 //
 #include "calcMissRate.h"
 
-
 template <class B, class Accur>
 void Histogram<B, Accur>::clear()
 {
-	binsMap.clear();
 	binsVec.clear();
 	binsTra.clear();
 	samples = 0;
-	hits = 0;
-	missRate = 0;
+	hits = 0.0;
+	missRate = 0.0;
 }
 
-template <class B, class Accur>
-void Histogram<B, Accur>::sample(B x)
-{
-	if (!binsMap[x])
-		binsMap[x] = 1;
-	else
-		++binsMap[x];
-	/* calculate the total num of sampling */
-	++samples;
-}
-
-template <class B, class Accur>
-bool Histogram<B, Accur>::mapToVector()
-{
-	auto last = binsMap.end();
-	/* point to the last element */
-	long maxSize = (--last)->first;
-	/* reserve some memory */
-	binsVec.reserve(maxSize);
-
-	auto it = binsMap.begin();
-
-	for (long i = 0; i <= maxSize; ++i)
-		if (i == it->first) {
-			binsVec.push_back(it->second);
-			++it;
-		}
-		else
-			binsVec.push_back(0);
-
-		return binsVec.size() == last->first + 1;
-}
-
-#ifdef LOG
+#ifdef LOG2
 template <class B, class Accur>
 bool Histogram<B, Accur>::mapToVector(std::vector<B> & buffer)
 {
@@ -61,7 +26,7 @@ bool Histogram<B, Accur>::mapToVector(std::vector<B> & buffer)
 	samples = buffer[0];
 
 	/* i is the index of buffer and starts from 1 */
-	for (long i = 1; i < buffer.size(); ++i)
+	for (uint32_t i = 1; i < buffer.size(); ++i)
 		/* fill up with 0 for the blank bins */
 		if (!buffer[i])
 			binsVec.resize(binsVec.size() + std::exp2(i - 1));
@@ -227,7 +192,7 @@ Accur Histogram<B, Accur>::calLruMissRatePoisson(const int & cap, const int & bl
 }
 
 template <class B, class Accur>
-Accur Histogram<B, Accur>::calLruMissRate(const int & cap, const int & blk, const int & assoc)
+Accur Histogram<B, Accur>::calLruMissRate(const int & cap, const int & blk, const int & assoc, const std::vector<double> & setDistr)
 {
 	hits = 0;
 
@@ -236,13 +201,14 @@ Accur Histogram<B, Accur>::calLruMissRate(const int & cap, const int & blk, cons
 	Accur p = (Accur)1 / setNum;
 
 	try {
-		/* we use cdf to calculate the probability that
-		   other SDs will be less than assoc after transforming */
-		for (int i = assoc; i < binsVec.size(); ++i) {
-			boost::math::binomial binom(i, p);
-			Accur q = boost::math::cdf(binom, (Accur)assoc - 1);
-			hits += (B)std::round(binsVec[i] * q);
-		}
+		for (int s = 0; s < setDistr.size(); ++s)
+			/* we use cdf to calculate the probability that
+		   	    other SDs will be less than assoc after transforming */
+			for (int i = assoc; i < binsVec.size(); ++i) {
+				boost::math::binomial binom(i, setDistr[s]);
+				Accur q = boost::math::cdf(binom, (Accur)assoc - 1);
+				hits += binsVec[i] * setDistr[s] * q;
+			}
 	}
 	catch (std::exception e) {
 		std::cout << e.what() << std::endl;
@@ -250,7 +216,7 @@ Accur Histogram<B, Accur>::calLruMissRate(const int & cap, const int & blk, cons
 
 	/* add up the SD < assoc fraction */
 	for (int i = 0; i < assoc; ++i)
-		hits += (B)std::round(binsVec[i]);
+		hits += binsVec[i];
 
 	missRate = 1 - (Accur)hits / samples;
 	return missRate;
@@ -365,66 +331,67 @@ inline double combinationRatio(int b, int a, int k)
 }
 
 template <class B, class Accur>
-Accur Histogram<B, Accur>::calMissRate(const int & cap, const int & blk, const int & assoc, const bool plru)
+Accur Histogram<B, Accur>::calMissRate(const int & cap, const int & blk, const int & assoc, const bool plru, const std::vector<double> & setDistr)
 {
 	if (!plru)
 		//return calLruMissRatePoisson(cap, blk, assoc);
-		return calLruMissRate(cap, blk, assoc);
+		return calLruMissRate(cap, blk, assoc, setDistr);
 	else
 		return calPlruMissRate(cap, blk, assoc);
 }
 
 template <class B, class Accur>
 void Histogram<B, Accur>::print(std::ofstream & file)
-{
-	auto it = binsMap.begin();
-	auto last = --binsMap.end();
-	for (int i = 0; i < last->first; ++i)
-		/* print zero value bins */
-		if (it->first != i)
-			file << "0 ";
-		else {
-			file << it->second << " ";
-			++it;
-		}
-		file << "\n";
-
-}
+{}
 
 Reader::Reader(std::ifstream & fin, std::ofstream & fout, int cap, int blk, int assoc) {
 	Histogram<int64_t> histogram;
-#ifdef LOG
-	int binSize = log2p1(MaxDist) + 1;
-#else
-	int binSize = MaxDist + 1;
-#endif
-
-	int64_t * temp = new int64_t[binSize];
+	int binSize = DOLOG(MaxDist) + 1;
 	std::vector<int64_t> buffer(binSize);
-	std::string line;
-	std::stringstream lineStream;
+	int64_t * line = new int64_t[MAXSETNUM];
 
+	/* read the set distribution */
+	fin.read((char *)line, MAXSETNUM * sizeof(int64_t));
+	int setNum = cap / (blk * assoc);
+	std::vector<double> setDistribution(setNum, 0.0);
+	int64_t total = 0;
+	/* calculate set distribution for this cache configuration */
+	for (int i = 0; i < MAXSETNUM; ++i) {
+		setDistribution[i & (setNum - 1)] += (double)line[i];
+		total += line[i];
+	}
+
+	delete [] line;
+
+	/* print set distribution */
+	for (int i = 0; i < setNum; ++i) {
+		fout << setDistribution[i] << " ";
+		setDistribution[i] /= (double) total;
+	}
+	fout << std::endl;
+
+	line = new int64_t[binSize];
 	while (!fin.eof()) {
-		fin.read((char *)temp, binSize * sizeof(int64_t));
-		if (temp[binSize - 1] < 0)
+		fin.read((char *)line, binSize * sizeof(int64_t));
+
+		if (line[binSize - 1] < 0)
 			break;
-		//for (int i = 0; i < binSize; ++i)
-		//	std::cout << temp[i] << " ";
-		//std::cout << "\n";
+
 		for (int i = 0; i < binSize; ++i)
-			buffer[i] += temp[i];
+			buffer[i] += line[i];
 	}
 
 	//for (int i = 0; i < binSize; ++i)
 	//	std::cout << buffer[i] << " ";
-	delete[] temp;
-	/* save temp bins into histogram */
+	delete[] line;
+	/* save line bins into histogram */
 	bool succ = histogram.mapToVector(buffer);
+	assert(succ);
 
-	double lruMissRate = histogram.calMissRate(cap, blk, assoc, false);
-	double lruTraMissRate = histogram.fullyToSetAssoc(cap, blk, assoc);
+	double lruMissRate = histogram.calMissRate(cap, blk, assoc, false, setDistribution);
+	//double lruTraMissRate = histogram.fullyToSetAssoc(cap, blk, assoc);
 	//double plruMissRate = histogram.calMissRate(cap, blk, assoc, true);
-	fout << std::setprecision(6) << lruMissRate << " " << lruTraMissRate << std::endl;
+	//fout << "estimated_miss_rate " << std::setprecision(6) << lruMissRate << std::endl;
 	fout.close();
 	std::cout << std::setprecision(6) << lruMissRate << std::endl;
 }
@@ -436,10 +403,12 @@ int main(int argc, char *argv[])
 	/* truncation distance */
 	std::string missBar(argv[4]);
 	MaxDist = std::stol(missBar, nullptr);
+	/* input file path */
 	std::string pathIn(argv[5]);
 	fin.open(pathIn, std::ios::binary | std::ios::in);
+	/* output file path */
 	std::string pathOut(argv[6]);
-	fout.open(pathOut, std::ios::out);
+	fout.open(pathOut, std::ios::out | std::ios::app);
 	if (fin.fail() || fout.fail()) {
 		std::cout << "SDD file or output file openning failed! " << std::endl;
 		return 0;
