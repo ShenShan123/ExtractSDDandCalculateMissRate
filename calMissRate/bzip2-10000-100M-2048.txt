@@ -1,0 +1,295 @@
+input file is ../bzip2/sample-10000-100M-2048.txt
+cache capacity 8192
+block size 64
+associativity 2
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0432758
+cache capacity 8192
+block size 64
+associativity 4
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0398575
+cache capacity 8192
+block size 64
+associativity 8
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0387506
+cache capacity 8192
+block size 64
+associativity 16
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0382983
+cache capacity 8192
+block size 64
+associativity 32
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0380375
+cache capacity 8192
+block size 64
+associativity 64
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0378334
+cache capacity 16384
+block size 64
+associativity 2
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.037762
+cache capacity 16384
+block size 64
+associativity 4
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0359581
+cache capacity 16384
+block size 64
+associativity 8
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0354029
+cache capacity 16384
+block size 64
+associativity 16
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0351675
+cache capacity 16384
+block size 64
+associativity 32
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0350384
+cache capacity 16384
+block size 64
+associativity 64
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.034946
+cache capacity 32768
+block size 64
+associativity 2
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0347174
+cache capacity 32768
+block size 64
+associativity 4
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0338193
+cache capacity 32768
+block size 64
+associativity 8
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0335699
+cache capacity 32768
+block size 64
+associativity 16
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0334802
+cache capacity 32768
+block size 64
+associativity 32
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.033435
+cache capacity 32768
+block size 64
+associativity 64
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0334015
+cache capacity 65536
+block size 64
+associativity 2
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0326104
+cache capacity 65536
+block size 64
+associativity 4
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.03211
+cache capacity 65536
+block size 64
+associativity 8
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0320027
+cache capacity 65536
+block size 64
+associativity 16
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0319645
+cache capacity 65536
+block size 64
+associativity 32
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0319462
+cache capacity 65536
+block size 64
+associativity 64
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0319132
+cache capacity 131072
+block size 64
+associativity 2
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0310273
+cache capacity 131072
+block size 64
+associativity 4
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0305198
+cache capacity 131072
+block size 64
+associativity 8
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0302863
+cache capacity 131072
+block size 64
+associativity 16
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0300321
+cache capacity 131072
+block size 64
+associativity 32
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0298595
+cache capacity 131072
+block size 64
+associativity 64
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0297712
+cache capacity 262144
+block size 64
+associativity 2
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0301051
+cache capacity 262144
+block size 64
+associativity 4
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0298123
+cache capacity 262144
+block size 64
+associativity 8
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0295637
+cache capacity 262144
+block size 64
+associativity 16
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0295607
+cache capacity 262144
+block size 64
+associativity 32
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0295607
+cache capacity 262144
+block size 64
+associativity 64
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0295607
+cache capacity 524288
+block size 64
+associativity 2
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0297715
+cache capacity 524288
+block size 64
+associativity 4
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0295972
+cache capacity 524288
+block size 64
+associativity 8
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0295607
+cache capacity 524288
+block size 64
+associativity 16
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0295607
+cache capacity 524288
+block size 64
+associativity 32
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0295607
+cache capacity 524288
+block size 64
+associativity 64
+truncation distance 2048
+input file ../bzip2/sample-10000-100M-2048.txt
+output file test.dump
+0.0295607

@@ -92,6 +92,17 @@ Histogram<B> & Histogram<B>::operator+=(const Histogram<B> & rhs)
 }
 
 template <class B>
+void Histogram<B>::average(const Histogram<B> & rhs)
+{
+    assert(_size == rhs._size);
+
+    for (int i = 0; i < _size; ++i)
+        bins[i] = (bins[i] + rhs.bins[i]) / 2;
+
+    samples = (samples + rhs.samples) / 2;
+}
+
+template <class B>
 void Histogram<B>::sample(int x)
 {
     /* the sample number must less than max size of bins */
@@ -114,10 +125,23 @@ void Histogram<B>::print(std::ofstream & file)
     file  << "\n";
 }
 
+void ReuseDist::setSampleInterval(uint32_t s)
+{
+    sampleInterval = s;
+    sampleCounter = s ? genRandNum(s) : 0;
+}
+
 void ReuseDist::calReuseDist(uint64_t addr, Histogram<> & rdv)
 {
-    long & value = addrMap[addr];
+    if (sampleInterval)
+        sampleReuseDist(addr, rdv);
+    else
+        fullReuseDist(addr, rdv);
+}
 
+void ReuseDist::fullReuseDist(uint64_t addr, Histogram<> & rdv)
+{
+    uint64_t & value = addrMap[addr];
     ++index;
 
     /* value is 0 under cold miss */
@@ -129,7 +153,7 @@ void ReuseDist::calReuseDist(uint64_t addr, Histogram<> & rdv)
 
     /* update b of last reference */
     if (value < index) {
-        uint32_t reuseDist = index - value - 1;
+        uint32_t reuseDist = index - value - 1; 
         reuseDist = reuseDist >= Truncation ? Truncation : reuseDist;
         rdv.sample(DOLOG(reuseDist));
     }
@@ -137,25 +161,96 @@ void ReuseDist::calReuseDist(uint64_t addr, Histogram<> & rdv)
     value = index;
 }
 
-template<class B>
-PhaseTable::Entry<B>::Entry(const Histogram<B> & rdv, const uint32_t _id) : Histogram<B>(rdv), id(_id), occur(1)
-{}
+void ReuseDist::sampleReuseDist(uint64_t addr, Histogram<> & rdv)
+{
+    auto pos = addrMap.find(addr);
+    /* the same address is encountered, finish rd calculation, and clear the rd-counter */
+    if (pos != addrMap.end()) {
+        rdv.sample(DOLOG(pos->second));
+        addrMap.erase(pos);
+    }
 
-template<class B>
-double PhaseTable::Entry<B>::manhattanDist(const Histogram<B> & rhs)
+    /* increas rd-counters and clear the rd-counters 
+       whose content is larger than truncation */
+    for (auto it = addrMap.begin(); it != addrMap.end(); ) {
+        ++(it->second);
+        /* test if the rd larger than truncation */
+        if (it->second >= Truncation) {
+            rdv.sample(DOLOG(Truncation));
+            auto eraseIt = it;
+            ++it;
+            /* clear the rd-counter */
+            addrMap.erase(eraseIt);
+        }
+        else 
+            ++it;
+    }
+
+    if (sampleCounter)
+        --sampleCounter;
+    /* when sampleCounter is zero, we sample an address to calculate rd. */
+    else {
+        /* ensure no same address is existing in addrMap */
+        assert(!addrMap[addr]);
+        /* record the sampled address */
+        addrMap[addr] = 0;
+        uint32_t random = genRandNum(sampleInterval);
+        /* set sampleCounter for the next sample */
+        sampleCounter = random + sampleResidual;
+        sampleResidual = sampleInterval - random;
+        //std::cout << "do sample, mapsize: " << addrMap.size() << std::endl;
+    }
+}
+
+PhaseTable::Entry::Entry(const Histogram<> & rdv, const uint32_t _id) : Histogram<>(rdv), id(_id), occur(1), reuse(0)
+{
+    //for (int i = 0; i < this->_size; ++i)
+      //  id ^= this->bins[i];
+}
+
+void PhaseTable::Entry::merge(Entry & rhs)
+{
+    assert(_size == rhs._size);
+
+    for (int i = 0; i < _size; ++i)
+        bins[i] += rhs.bins[i];
+
+    samples += rhs.samples;
+    occur += rhs.occur;
+}
+
+double PhaseTable::Entry::manhattanDist(const Histogram<> & rhs)
 {
     assert(this->_size == rhs.size());
 
-    B dist = 0;
-    for (uint32_t i = 0; i < this->_size; ++i)
+    int64_t dist = 0;
+    for (int i = 0; i < this->_size; ++i)
         /* abstract the sum of the similar rdvs in the entry 
            with the rhs(current phase rdv), this is 
            an approximation to average manhattan distance
            between to clusters. */
-        dist += std::abs(this->bins[i] - occur * rhs[i]);
+        //dist += std::abs(this->bins[i] - occur * rhs[i]);
+        dist += std::abs(this->bins[i] - rhs[i]);
 
     return (double)dist / this->samples;
 }
+
+double PhaseTable::Entry::manhattanDist(const Entry & rhs)
+{
+    int64_t dist = 0;
+    for (int i = 0; i < this->_size; ++i)
+        /* abstract the sum of the similar rdvs in the entry 
+           with the rhs(current phase rdv), this is 
+           an approximation to average manhattan distance
+           between to clusters. */
+        //dist += std::abs(this->bins[i] / occur - rhs[i] / rhs.occur);
+        dist += std::abs(this->bins[i] - rhs[i]);
+
+    //return (double)dist / (this->samples / occur);
+    return (double)dist / this->samples;
+}
+
+void PhaseTable::Entry::clearReuse() { reuse = 0; }
 
 PhaseTable::~PhaseTable() 
 {
@@ -169,40 +264,128 @@ void PhaseTable::init(double t, uint32_t s)
     ptSize = s;
 }
 
-void PhaseTable::lruRepl(Entry<int64_t> * ent, std::list<Entry<int64_t> *>::iterator & p)
+void PhaseTable::mergeClusts()
+{
+    uint32_t i = 0;
+
+    for (auto it = pt.begin(); it != pt.end(); ++it) {
+        double distMin = DBL_MAX;
+        auto similarPos = pt.end();
+        /* find the next entries in phase table */
+        auto jt = it;
+        ++jt;
+        for (; jt != pt.end(); ++jt) {
+            double dist = (*it)->manhattanDist(**jt);
+            if (dist < distMin) {
+                distMin = dist;
+                similarPos = jt;
+            }
+        }
+
+        assert(jt == pt.end());
+
+        /* find similar phase in victim table */
+        bool inVicts = false;
+        for (jt = victs.begin(); jt != victs.end(); ++jt) {
+            double dist = (*it)->manhattanDist(**jt);
+            if (dist < distMin) {
+                distMin = dist;
+                similarPos = jt;
+                inVicts = true;
+            }
+        }
+        /* the distance between two phase is less than the threshold,
+           we merge these into one phase, and empty an entry */
+        if (distMin < threshold) {
+            assert(similarPos != pt.end() && similarPos != victs.end());
+            (*it)->merge(**similarPos);
+            std::cout << "merge two entris " << (*it)->getId() << " with " << (*similarPos)->getId() << std::endl;
+            fout << (*it)->getId() << " " << (*similarPos)->getId() << " merge\n"; 
+            
+            if (inVicts)
+                victs.erase(similarPos);
+            else
+                pt.erase(similarPos);
+        }
+
+        ++i;
+
+        if (i > pt.size() / 2)
+            break;
+    }
+}
+
+#define VICTSIZE 4
+
+void PhaseTable::lruRepl(Entry * ent, std::list<Entry *>::iterator & p, bool inVicts)
 {
     /* move the most recently access entry to the head of list */
     pt.push_front(ent);
-    /* erase the old position */
-    if (p != pt.end())
+
+    /* the signature phase is in victim table */
+    if (inVicts) {
+        assert(p != victs.end());
+        victs.erase(p);
+        std::cout << "phase in victim table\n";
+        fout << "invicts\n";
+    }
+    /* erase the old position in phase table */
+    else if (p != victs.end())
         pt.erase(p);
-    /* this is a new entry */
-    /* if the phase table is full, delete the last entry */
-    else if (pt.size() > ptSize) {
-        std::cout << "full phase table!! pop " << (*(--p))->id << std::endl;
-        /* free the pointer, Entry<> *, and pop the last element */
-        delete *p;
+    
+    /* if it is a new entry, we check the max size of phase table */
+    /* if the phase table is full, move the last entry into victim table */
+    if (pt.size() > ptSize) {
+        std::cout << "full phase table!! pop " << pt.back()->getId() << " occurence " << pt.back()->occur << " reuseCounter " << pt.back()->getReuse() << std::endl;
+        mergeClusts();
+        /* puts the victim into victim table */
+        if (pt.back()->occur > 1) {
+            victs.push_front(pt.back());
+            /* if the victs size is maximum, free the pointer */
+            if (victs.size() > VICTSIZE) {
+                delete victs.back();
+                victs.pop_back();
+            }
+        }
+        /* free the pointer, Entry *, and pop the last element */
         pt.pop_back();
     }
 
     assert(pt.size() <= ptSize);
 }
 
-uint32_t PhaseTable::find(const Histogram<> & rdv)
+PhaseTable::Entry * PhaseTable::find(const Histogram<> & rdv)
 {
     double distMin = DBL_MAX;
-    Entry<int64_t> * entryPtr = nullptr;
-    auto pos = pt.end();
+    Entry * entryPtr = nullptr;
+    auto similarPos = victs.end();
+    bool inVicts = false;
 
-    /* search for a similar RDV of a phase */
+    /* search for a similar RDV in phase table */
     for (auto it = pt.begin(); it != pt.end(); ++it) {
-        double dist = (*it)->manhattanDist(rdv);
+        /* update the reuse conter */
+        ++(*it)->reuse;
 
+        double dist = (*it)->manhattanDist(rdv);
         if (dist < distMin) {
             distMin = dist;
             entryPtr = *it;
             /* record the postion of the nearest vector */
-            pos = it;
+            similarPos = it;
+        }
+    }
+
+    /* search for a similar RDV in victim table */
+    for (auto it = victs.begin(); it != victs.end(); ++it) {
+        ++(*it)->reuse;
+
+        double dist = (*it)->manhattanDist(rdv);
+        if (dist < distMin) {
+            distMin = dist;
+            entryPtr = *it;
+            /* record the postion of the nearest vector */
+            similarPos = it;
+            inVicts = true;
         }
     }
 
@@ -211,22 +394,23 @@ uint32_t PhaseTable::find(const Histogram<> & rdv)
        and incread the occurence counter. */
     if (distMin < threshold && entryPtr != nullptr) {
         ++entryPtr->occur;
-        *entryPtr += rdv;
+        entryPtr->average(rdv);
         std::cout << "found a similar phase: id " << entryPtr->id << std::endl;
         
-        lruRepl(entryPtr, pos);
-        return entryPtr->id;
+        lruRepl(entryPtr, similarPos, inVicts);
     }
     /* creat a new phase entry and do LRU replacement policy */
     else {
         ++newId;
-        pos = pt.end();
-        entryPtr = new Entry<int64_t>(rdv, newId);
+        similarPos = victs.end();
+        //entryPtr = new Entry(rdv, genRandNum(ptSize * 8));
+        entryPtr = new Entry(rdv, newId);
         std::cout << "creat a new phase: id " << entryPtr->id << std::endl;
         
-        lruRepl(entryPtr, pos);
-        return entryPtr->id;
+        lruRepl(entryPtr, similarPos, false);
     }
+
+    return entryPtr;
 }
 
 VOID PIN_FAST_ANALYSIS_CALL
@@ -242,20 +426,20 @@ RecordMemRefs(ADDRINT ea)
         InterCount -= IntervalSize;
         ++NumIntervals;
 
-        uint32_t id = phaseTable.find(currRDD);
+        //PhaseTable::Entry * entry = phaseTable.find(currRDD);
         /* print the current phase index */
-        fout << id << "\n";
+        //fout << entry->getId() << "\n";
 
-        //currRDD.print(fout);
+        currRDD.print(fout);
         currRDD.clear();
         std::cout << "==== " << NumIntervals << "th interval ====" << std::endl;
     }
 
     /* if we got a maximum memory references, just exit this program */
-    //if (NumMemAccs >= 50000000000) {
-        //Fini(0);
-        //exit(0);
-    //}
+    if (NumIntervals >= 5000) {
+        Fini(0);
+        exit(0);
+    }
 }
 
 /*
@@ -333,6 +517,8 @@ int main(int argc, char *argv[])
          return -1;
     }
 
+    /* set whether do sampling or not, default is 0 */
+    reuseDist.setSampleInterval(KnobSample.Value());
     /* current phase RDD */
     currRDD.setSize(DOLOG(Truncation) + 1);
     /* init the phase table with  threshold = 5%  and table size */
@@ -340,7 +526,7 @@ int main(int argc, char *argv[])
 
     std::cout << "truncation distance " << Truncation << "\nRDV dimension " << currRDD.size() << "\nout file " << KnobOutputFile.Value().c_str() \
     << "\ninterval size " << IntervalSize << "\nPhase threshold " << (double)KnobRdvThreshold.Value() / 100 \
-    << "\nphase table size " << KnobPhaseTableSize.Value() << std::endl;
+    << "\nphase table size " << KnobPhaseTableSize.Value() << "\nsample interval size " << KnobSample.Value() << std::endl;
 
     // add an instrumentation function
     TRACE_AddInstrumentFunction(Trace, 0);

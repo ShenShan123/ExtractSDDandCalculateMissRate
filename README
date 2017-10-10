@@ -1,29 +1,3 @@
-<<<<<<< HEAD
-A Pin Tool: Extract the stack distance distribution with sampling technique.
-===================================================================
-This is a tool to get SDD based on Intel Pin-2.14, linux version.
-put this directory in pin-2.14-71313-gcc.4.4.7-linux\source\tools,
-and use it as a pin tool.
-The program for calculating cache miss rate is in subdirectory ./calMissRate
-the subdirectory ./gcc ./bzip2 is a SPEC2006 benchmark.
-
-
-This program generates the SDD input for calMissRate program.
-===================================================================
-the arguments:
--o output file path, default SDD.txt
--m truncation distance, default 2K
--i interval size, default 10M
--s sample rate, default 10000, i.e. 1e-4
-
-For example:
-$ cd gcc-trace
-$ ../../../../pin -t ../obj-intel64/memTraceSimple.so -m 262144 -o trunc-262144.txt -i 100000000 -s 500 -- ./gcc_base.gcc41-amd64bit 166.in -o 166.s
-===================================================================
-how to build?
-Just default make
-$ make obj-intel64/memTraceSimple.so
-=======
 A Pin Tool: Extract the stack distance distribution with sampling technique.
 ===================================================================
 This is a tool to get SDD based on Intel Pin-2.14, linux version.
@@ -37,12 +11,12 @@ also can extract a BBV, the libary in obj-intel64/bbvTrace.so/.o
 This program generates the SDD input for calMissRate program.
 ===================================================================
 the arguments:
--o output file path, default SDD.txt
+-o output file path, default RDV.txt
 -m truncation distance, default 16K
 -i interval size, default 10M
-/*-s sample rate, default 10000, i.e. 1e-4*/
--t the threshold, a maximum normalized manhattan distance which considers  two RD vector is different, default is 5, i.e. 5%
--p phase table size, default
+-s sample rate, default 0, i.e. do not sample
+-t the threshold, a maximum normalized manhattan distance which considers two RD vector is different, default is 5, i.e. 5%
+-p phase table size, default 10000, it is an approximately infinite table size
 
 
 For example:

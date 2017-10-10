@@ -1,0 +1,295 @@
+input file is ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+cache capacity 8192
+block size 64
+associativity 2
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0885334
+cache capacity 8192
+block size 64
+associativity 4
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0835484
+cache capacity 8192
+block size 64
+associativity 8
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0818742
+cache capacity 8192
+block size 64
+associativity 16
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0811876
+cache capacity 8192
+block size 64
+associativity 32
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0808034
+cache capacity 8192
+block size 64
+associativity 64
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0805022
+cache capacity 16384
+block size 64
+associativity 2
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0791029
+cache capacity 16384
+block size 64
+associativity 4
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0767044
+cache capacity 16384
+block size 64
+associativity 8
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0762079
+cache capacity 16384
+block size 64
+associativity 16
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0761445
+cache capacity 16384
+block size 64
+associativity 32
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0761661
+cache capacity 16384
+block size 64
+associativity 64
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0761861
+cache capacity 32768
+block size 64
+associativity 2
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0719691
+cache capacity 32768
+block size 64
+associativity 4
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0701767
+cache capacity 32768
+block size 64
+associativity 8
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0693714
+cache capacity 32768
+block size 64
+associativity 16
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0688607
+cache capacity 32768
+block size 64
+associativity 32
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0684883
+cache capacity 32768
+block size 64
+associativity 64
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0682113
+cache capacity 65536
+block size 64
+associativity 2
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.066648
+cache capacity 65536
+block size 64
+associativity 4
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0649912
+cache capacity 65536
+block size 64
+associativity 8
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0642149
+cache capacity 65536
+block size 64
+associativity 16
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0638114
+cache capacity 65536
+block size 64
+associativity 32
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0635872
+cache capacity 65536
+block size 64
+associativity 64
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0634421
+cache capacity 131072
+block size 64
+associativity 2
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0634634
+cache capacity 131072
+block size 64
+associativity 4
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0623084
+cache capacity 131072
+block size 64
+associativity 8
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0618399
+cache capacity 131072
+block size 64
+associativity 16
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0616766
+cache capacity 131072
+block size 64
+associativity 32
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0615927
+cache capacity 131072
+block size 64
+associativity 64
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.061534
+cache capacity 262144
+block size 64
+associativity 2
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0620125
+cache capacity 262144
+block size 64
+associativity 4
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0614529
+cache capacity 262144
+block size 64
+associativity 8
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0613863
+cache capacity 262144
+block size 64
+associativity 16
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0613849
+cache capacity 262144
+block size 64
+associativity 32
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0613848
+cache capacity 262144
+block size 64
+associativity 64
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0613846
+cache capacity 524288
+block size 64
+associativity 2
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0614705
+cache capacity 524288
+block size 64
+associativity 4
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0613859
+cache capacity 524288
+block size 64
+associativity 8
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0613848
+cache capacity 524288
+block size 64
+associativity 16
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0613846
+cache capacity 524288
+block size 64
+associativity 32
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0613846
+cache capacity 524288
+block size 64
+associativity 64
+truncation distance 2048
+input file ../gcc/log-memInterval-sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0613846

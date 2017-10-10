@@ -16,7 +16,7 @@
 #include <boost/random.hpp>
 #include <boost/math/special_functions/gamma.hpp>
 
-//#define LOG2
+#define LOG2
 #define MAXSETNUM 4096
 
 static int64_t MaxDist = 0;

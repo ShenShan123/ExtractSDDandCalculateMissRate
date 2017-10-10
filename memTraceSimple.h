@@ -3,15 +3,10 @@
 
 #include <iostream>
 #include <fstream>
-#include <unordered_set>
-#include <vector>
 #include <map>
 #include <random>
-#include <unordered_map>
 #include <assert.h>
-#include <stdlib.h> 
 #include <iomanip>
-#include <deque>
 #include <list>
 #include <float.h>
 #include "pin.H"
@@ -28,9 +23,9 @@ static uint64_t BlkBits = 6;
 KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool", "o", "RDV.txt", "specify output file name");
 KNOB<UINT64> KnobTruncDist(KNOB_MODE_WRITEONCE, "pintool", "m", "16384", "the truncation distance of SD");
 KNOB<UINT64> KnobIntervalSize(KNOB_MODE_WRITEONCE, "pintool", "i", "10000000", "the interval size");
-//KNOB<UINT64> KnobSampleRate(KNOB_MODE_WRITEONCE, "pintool", "s", "10000", "the sample rate");
+KNOB<UINT32> KnobSample(KNOB_MODE_WRITEONCE, "pintool", "s", "0", "the sample interval size");
 KNOB<UINT32> KnobRdvThreshold(KNOB_MODE_WRITEONCE, "pintool", "t", "5", "the maximum normalized manhattan distance of two RD vector");
-KNOB<UINT32> KnobPhaseTableSize(KNOB_MODE_WRITEONCE, "pintool", "p", "10000", "phase table size");
+KNOB<UINT32> KnobPhaseTableSize(KNOB_MODE_WRITEONCE, "pintool", "p", "256", "phase table size");
 
 #define LOG2
 //#define SAMPLE
@@ -47,6 +42,16 @@ inline T log2p1(T s)
 	}
 
 	return result;
+}
+
+template<class I>
+I genRandNum(I range)
+{
+    // construct a trivial random generator engine from a time-based seed:
+    std::random_device seed;
+    static std::mt19937 engine(seed());
+    static std::uniform_int_distribution<I> unif(1, range);
+    return unif(engine);
 }
 
 /* fast to calculate log2(x)+1 */
@@ -89,6 +94,9 @@ public:
 
 	Histogram<B> & operator+=(const Histogram<B> & rhs);
 
+	/* recompute the centroid */
+	void average(const Histogram<B> & rhs);
+
 	void sample(int x);
 
 	const B getSamples() const; 
@@ -99,38 +107,61 @@ public:
 /* do reuse distance statistics */
 class ReuseDist
 {
-	std::map<uint64_t, long> addrMap;
-	long index;
+	std::map<uint64_t, uint64_t> addrMap;
+	uint64_t index;
+	uint32_t sampleInterval;
+	uint32_t sampleCounter;
+	uint32_t sampleResidual;
 
 public:
-	ReuseDist() : index(0) {};
+	ReuseDist() : index(0), sampleInterval(0), sampleCounter(0), sampleResidual(0) {};
 
 	~ReuseDist() {};
 
+	void setSampleInterval(uint32_t s);
+
 	void calReuseDist(uint64_t addr, Histogram<> & rdv);
+
+	void fullReuseDist(uint64_t addr, Histogram<> & rdv);
+
+	void sampleReuseDist(uint64_t addr, Histogram<> & rdv);
+
+	uint32_t mapSize() { return addrMap.size(); }
 };
 
 class PhaseTable
 {
-private:
-	template<class B>
-	class Entry : public Histogram<B>
+public:
+	class Entry : public Histogram<>
 	{
 	private:
 		friend class PhaseTable;
 		uint32_t id;
 		uint32_t occur;
+		uint16_t reuse;
 	
 	public:
-		Entry(const Histogram<B> & rdv, const uint32_t _id);
+		Entry(const Histogram<> & rdv, const uint32_t _id);
 	
 		~Entry() {};
 
-		double manhattanDist(const Histogram<B> & rhs);
+		void merge(Entry & rhs);
+
+		double manhattanDist(const Histogram<> & rhs);
+		
+		double manhattanDist(const Entry & rhs);
+
+		void clearReuse();
+
+		const uint32_t getId() const { return id; }
+
+		const uint16_t getReuse() const { return reuse; }
 	};
 
+private:
 	/* list for LRU replacement policy */
-	std::list<Entry<int64_t> *> pt;
+	std::list<Entry *> pt;
+	std::list<Entry *> victs;
 	double threshold;
 	uint32_t newId;
 	uint32_t ptSize;
@@ -142,13 +173,16 @@ public:
 
 	void init(double t, uint32_t s);
 
-	/* do LRU replacement */
-	void lruRepl(Entry<int64_t> * ent, std::list<Entry<int64_t> *>::iterator & p);
+	void mergeClusts();
 
-	uint32_t find(const Histogram<> & rdv);
+	/* do LRU replacement */
+	void lruRepl(Entry * ent, std::list<Entry *>::iterator & p, bool inVicts);
+
+	PhaseTable::Entry * find(const Histogram<> & rdv);
 
 	const int size() const { return pt.size(); }
 };
+
 
 VOID PIN_FAST_ANALYSIS_CALL
 RecordMemRefs(ADDRINT ea);
@@ -160,7 +194,7 @@ RecordMemRefs(ADDRINT ea);
 VOID Trace(TRACE trace, VOID *v);
 
 /* output the results, and free the poiters */
-VOID Fini(INT32 code, VOID *v);
+VOID Fini(INT32 code, VOID *v = NULL);
 
 /* ===================================================================== */
 /* Print Help Message                                                    */

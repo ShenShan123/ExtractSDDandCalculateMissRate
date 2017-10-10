@@ -1,0 +1,295 @@
+input file is ../bwaves/sample-10000-10M-trunc-2048.txt
+cache capacity 8192
+block size 64
+associativity 2
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0356998
+cache capacity 8192
+block size 64
+associativity 4
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0245043
+cache capacity 8192
+block size 64
+associativity 8
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0208169
+cache capacity 8192
+block size 64
+associativity 16
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0199775
+cache capacity 8192
+block size 64
+associativity 32
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0198608
+cache capacity 8192
+block size 64
+associativity 64
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0197999
+cache capacity 16384
+block size 64
+associativity 2
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0244133
+cache capacity 16384
+block size 64
+associativity 4
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0200466
+cache capacity 16384
+block size 64
+associativity 8
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0194857
+cache capacity 16384
+block size 64
+associativity 16
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0194375
+cache capacity 16384
+block size 64
+associativity 32
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0194199
+cache capacity 16384
+block size 64
+associativity 64
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0194077
+cache capacity 32768
+block size 64
+associativity 2
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.020684
+cache capacity 32768
+block size 64
+associativity 4
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0193294
+cache capacity 32768
+block size 64
+associativity 8
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0192513
+cache capacity 32768
+block size 64
+associativity 16
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0192342
+cache capacity 32768
+block size 64
+associativity 32
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0192255
+cache capacity 32768
+block size 64
+associativity 64
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0192191
+cache capacity 65536
+block size 64
+associativity 2
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0193948
+cache capacity 65536
+block size 64
+associativity 4
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0190247
+cache capacity 65536
+block size 64
+associativity 8
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0190142
+cache capacity 65536
+block size 64
+associativity 16
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0190207
+cache capacity 65536
+block size 64
+associativity 32
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0190293
+cache capacity 65536
+block size 64
+associativity 64
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0190358
+cache capacity 131072
+block size 64
+associativity 2
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0188345
+cache capacity 131072
+block size 64
+associativity 4
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.018618
+cache capacity 131072
+block size 64
+associativity 8
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0185584
+cache capacity 131072
+block size 64
+associativity 16
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0185175
+cache capacity 131072
+block size 64
+associativity 32
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.018465
+cache capacity 131072
+block size 64
+associativity 64
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0184265
+cache capacity 262144
+block size 64
+associativity 2
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0185121
+cache capacity 262144
+block size 64
+associativity 4
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0184302
+cache capacity 262144
+block size 64
+associativity 8
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0183846
+cache capacity 262144
+block size 64
+associativity 16
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0183263
+cache capacity 262144
+block size 64
+associativity 32
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0183262
+cache capacity 262144
+block size 64
+associativity 64
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0183262
+cache capacity 524288
+block size 64
+associativity 2
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0184366
+cache capacity 524288
+block size 64
+associativity 4
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0183668
+cache capacity 524288
+block size 64
+associativity 8
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0183262
+cache capacity 524288
+block size 64
+associativity 16
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0183262
+cache capacity 524288
+block size 64
+associativity 32
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0183262
+cache capacity 524288
+block size 64
+associativity 64
+truncation distance 2048
+input file ../bwaves/sample-10000-10M-trunc-2048.txt
+output file test.dump
+0.0183262
