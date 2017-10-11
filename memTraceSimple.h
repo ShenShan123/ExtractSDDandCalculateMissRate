@@ -97,7 +97,7 @@ public:
 	/* recompute the centroid */
 	void average(const Histogram<B> & rhs);
 
-	void sample(int x);
+	void sample(int x, uint16_t n = 1);
 
 	const B getSamples() const; 
 

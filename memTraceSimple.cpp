@@ -103,17 +103,13 @@ void Histogram<B>::average(const Histogram<B> & rhs)
 }
 
 template <class B>
-void Histogram<B>::sample(int x)
+void Histogram<B>::sample(int x, uint16_t n)
 {
     /* the sample number must less than max size of bins */
     assert(x < _size && x >= 0);
-
-    if (!bins[x])
-        bins[x] = 1;
-    else
-        ++bins[x];
+    bins[x] += n;
     /* calculate the total num of sampling */
-    ++samples;
+    samples += n;
 }
 
 template <class B>
@@ -131,6 +127,7 @@ void ReuseDist::setSampleInterval(uint32_t s)
     sampleCounter = s ? genRandNum(s) : 0;
 }
 
+#if 0
 void ReuseDist::calReuseDist(uint64_t addr, Histogram<> & rdv)
 {
     if (sampleInterval)
@@ -138,29 +135,70 @@ void ReuseDist::calReuseDist(uint64_t addr, Histogram<> & rdv)
     else
         fullReuseDist(addr, rdv);
 }
+#endif
 
-void ReuseDist::fullReuseDist(uint64_t addr, Histogram<> & rdv)
+void ReuseDist::calReuseDist(uint64_t addr, Histogram<> & rdv)
 {
-    uint64_t & value = addrMap[addr];
     ++index;
 
-    /* value is 0 under cold miss */
-    if (!value) {
+    auto pos = addrMap.find(addr);
+
+    if (pos != addrMap.end()) {
+        uint32_t reuseDist = index - pos->second - 1; 
+        /* for the sampling scheme, rd-counter is clear when finish rd calculation */
+        if (sampleInterval)
+            addrMap.erase(pos);
+        /* if the rd larger than the truncation, we check other rd-counters, 
+           if their rds are also larger then truncation, we just delete them */
+        if (reuseDist >= Truncation) {
+            /* the total number of rd-counters whose values are larger then truncation */
+            int numTrunc = 1;
+
+            for (auto it = addrMap.begin(); it != addrMap.end(); ) {
+                if (index - it->second - 1 >= Truncation) {
+                    ++numTrunc;
+                    auto eraseIt = it;
+                    ++it;
+                    addrMap.erase(eraseIt);
+                }
+                else
+                    ++it;
+            }
+
+            rdv.sample(DOLOG(Truncation), sampleInterval ? numTrunc : 1);
+
+        }
+        /* else we don't need to traverse the addrMap */
+        else
+            rdv.sample(DOLOG(reuseDist));
+    }
+    /* we don't find this address indicate cold address in non-sampling scheme */
+    else if (!sampleInterval)
         rdv.sample(DOLOG(Truncation));
-        value = index;
-        return;
-    }
 
-    /* update b of last reference */
-    if (value < index) {
-        uint32_t reuseDist = index - value - 1; 
-        reuseDist = reuseDist >= Truncation ? Truncation : reuseDist;
-        rdv.sample(DOLOG(reuseDist));
+    /* for sampline scheme */
+    if (sampleCounter)
+        --sampleCounter;
+    /* when sampleCounter is zero in sampling scheme, 
+       we sample an address to calculate rd. */
+    else if (sampleInterval) {
+        /* ensure no same address is existing in addrMap */
+        assert(!addrMap[addr]);
+        uint32_t random = genRandNum(sampleInterval);
+        /* set sampleCounter for the next sample */
+        sampleCounter = random + sampleResidual;
+        sampleResidual = sampleInterval - random;
+        //std::cout << "do sample, mapsize: " << addrMap.size() << std::endl;
+        /* record the new sampled address and the index */
+        addrMap[addr] = index;
     }
+    /* for non-sampling scheme */
+    else 
+        addrMap[addr] = index;
 
-    value = index;
 }
 
+#if 0
 void ReuseDist::sampleReuseDist(uint64_t addr, Histogram<> & rdv)
 {
     auto pos = addrMap.find(addr);
@@ -201,6 +239,7 @@ void ReuseDist::sampleReuseDist(uint64_t addr, Histogram<> & rdv)
         //std::cout << "do sample, mapsize: " << addrMap.size() << std::endl;
     }
 }
+#endif
 
 PhaseTable::Entry::Entry(const Histogram<> & rdv, const uint32_t _id) : Histogram<>(rdv), id(_id), occur(1), reuse(0)
 {
